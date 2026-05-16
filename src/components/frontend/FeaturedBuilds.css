@@ -1,0 +1,164 @@
+.feat {
+  padding: 50px 0;
+  background: #fff;
+}
+
+.feat-container {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.feat-header {
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.feat-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.feat-title {
+  font-family: 'Albert Sans', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 8px;
+}
+
+.feat-subtitle {
+  font-size: 15px;
+  color: #888;
+  margin: 0;
+}
+
+.feat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.feat-card {
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.feat-card-img {
+  height: 440px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+.feat-card:hover .feat-card-img {
+  transform: scale(1.03);
+}
+
+.feat-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.02) 100%);
+  transition: background 0.4s;
+}
+
+.feat-card:hover .feat-card-overlay {
+  background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.05) 100%);
+}
+
+.feat-card-tag {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 100px;
+  letter-spacing: 1.5px;
+  z-index: 2;
+}
+
+.feat-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 36px;
+  color: #fff;
+}
+
+.feat-card-content h3 {
+  font-family: 'Albert Sans', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.feat-card-content p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.65);
+  margin: 0 0 14px;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.feat-card-price {
+  display: block;
+  font-family: 'Albert Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.feat-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #111;
+  padding: 13px 28px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.35s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.feat-card-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 180, 216,0.3);
+}
+
+.feat-card-btn svg { transition: transform 0.3s; }
+.feat-card-btn:hover svg { transform: translateX(4px); }
+
+@media (max-width: 768px) {
+  .feat { padding: 30px 0; }
+  .feat-container { padding: 0 16px; }
+  .feat-grid { grid-template-columns: 1fr; gap: 16px; }
+  .feat-card-img { height: 340px; }
+  .feat-card-content h3 { font-size: 26px; }
+  .feat-title { font-size: 26px; }
+  .feat-card-content p { font-size: 14.5px; }
+  .feat-card-content { padding: 28px; }
+}
+
+@media (max-width: 480px) {
+  .feat-card-img { height: 300px; }
+  .feat-card-content h3 { font-size: 22px; }
+  .feat-card-price { font-size: 18px; }
+}

@@ -1,0 +1,20 @@
+import mongoose, { Schema, model, models } from "mongoose";
+
+const CouponSchema = new Schema(
+  {
+    code: { type: String, required: true, unique: true },
+    type: { type: String, enum: ["PERCENTAGE", "FIXED"], required: true },
+    value: { type: Number, required: true },
+    expiryDate: { type: Date, required: true },
+    usageLimit: { type: Number, default: 0 }, // 0 means unlimited
+    usedCount: { type: Number, default: 0 },
+    minCartValue: { type: Number, default: 0 },
+    applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
+
+const Coupon = models.Coupon || model("Coupon", CouponSchema);
+
+export default Coupon;
