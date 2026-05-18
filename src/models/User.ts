@@ -21,7 +21,7 @@ const UserSchema = new Schema(
       img: { type: String },
       category: { type: String }
     }],
-    wishlist: [{ type: String }], // Array of product IDs
+    wishlist: [{ type: String }], 
     addresses: [{
       label: { type: String, default: "Home" },
       fullName: { type: String },
@@ -37,7 +37,7 @@ const UserSchema = new Schema(
 );
 
 if (process.env.NODE_ENV === "development") {
-  // Use a safer check for models in development
+  
   if (mongoose.models && mongoose.models.User) {
     delete mongoose.models.User;
   }

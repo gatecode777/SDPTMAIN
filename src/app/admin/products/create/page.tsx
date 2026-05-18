@@ -10,8 +10,6 @@ import {
   Loader2,
   Upload,
   X,
-  Plus,
-  Image as ImageIcon,
   Save,
   Eye
 } from "lucide-react";
@@ -37,9 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createProduct } from "@/actions/product";
 import { uploadImages } from "@/actions/upload";
 

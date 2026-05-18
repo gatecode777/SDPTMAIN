@@ -3,13 +3,13 @@
 import React, { useContext, useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { FiUser, FiBook, FiBox, FiCreditCard, FiTag, FiSettings, FiHelpCircle, FiLogOut, FiCheck, FiCamera, FiEdit2, FiPhone, FiMail, FiLock, FiTruck } from "react-icons/fi";
+import { FiUser, FiBook, FiBox, FiSettings, FiLogOut, FiCamera, FiEdit2, FiPhone, FiMail, FiLock, FiTruck } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import "./Checkout.css";
 import Swal from 'sweetalert2';
 
 import { useSession, signOut } from "next-auth/react";
-import { syncUserCart, getUserData, addUserAddress, deleteUserAddress, updateAddress, updateUserProfile } from "@/actions/user-sync";
+import { getUserData, addUserAddress, deleteUserAddress, updateAddress, updateUserProfile } from "@/actions/user-sync";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 
@@ -725,7 +725,7 @@ const AccountContent = () => {
                       </div>
                     )}
 
-                    {/* Return & Cancel Logic */}
+                    {}
                     <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                       {['PENDING', 'CONFIRMED', 'PACKED'].includes(order.orderStatus) && (
                         <button 

@@ -9,7 +9,7 @@ export async function getBanner() {
   try {
     let banner = await Banner.findOne({ isActive: true }).sort({ createdAt: -1 });
     if (!banner) {
-      // If no active banner, get the latest one or create a default
+      
       banner = await Banner.findOne({}).sort({ createdAt: -1 });
       if (!banner) {
         banner = await Banner.create({});
@@ -24,7 +24,7 @@ export async function getBanner() {
 export async function updateBanner(data: any) {
   await dbConnect();
   try {
-    let banner = await Banner.findOne({});
+    const banner = await Banner.findOne({});
     if (banner) {
       await Banner.findByIdAndUpdate(banner._id, data);
     } else {

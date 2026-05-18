@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const BannerSchema = new Schema(
   {
@@ -8,7 +8,7 @@ const BannerSchema = new Schema(
     buttonText: { type: String, default: "Shop the Sale" },
     buttonLink: { type: String, default: "/shop" },
     imageUrl: { type: String, default: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80" },
-    expiryDate: { type: Date, default: () => new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) }, // 5 days from now
+    expiryDate: { type: Date, default: () => new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) }, 
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

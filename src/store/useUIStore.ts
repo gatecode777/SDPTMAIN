@@ -14,7 +14,7 @@ export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       isSidebarOpen: true,
-      themeColor: "221.2 83.2% 53.3%", // Default Blue
+      themeColor: "221.2 83.2% 53.3%", 
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
       closeSidebar: () => set({ isSidebarOpen: false }),
       openSidebar: () => set({ isSidebarOpen: true }),

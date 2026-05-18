@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const ProductSchema = new Schema(
   {
@@ -39,12 +39,12 @@ const ProductSchema = new Schema(
   { timestamps: true }
 );
 
-// Middleware to calculate price and offerPrice before saving
+
 ProductSchema.pre("validate", function () {
   if (this.mrp && this.discountPercentage !== undefined) {
     const calculatedPrice = this.mrp - (this.mrp * this.discountPercentage) / 100;
     this.offerPrice = calculatedPrice;
-    this.price = calculatedPrice; // Ensure price is also set to satisfy required constraint
+    this.price = calculatedPrice; 
   }
 });
 

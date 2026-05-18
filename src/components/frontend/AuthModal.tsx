@@ -49,11 +49,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
     const { name, value } = e.target;
 
     if (name === "phone") {
-      // Only digits, max 10
+      
       const cleaned = value.replace(/\D/g, "").slice(0, 10);
       setFormData({ ...formData, [name]: cleaned });
     } else if (name === "name") {
-      // Only letters and spaces
+      
       const cleaned = value.replace(/[^a-zA-Z\s]/g, "");
       setFormData({ ...formData, [name]: cleaned });
     } else {
@@ -98,7 +98,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
     try {
       if (isLogin) {
-        // Login Logic
+        
         const result = await signIn("credentials", {
           email: formData.email,
           password: formData.password,
@@ -114,7 +114,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           onClose();
         }
       } else {
-        // Signup Logic
+        
         const res = await fetch("/api/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 
-// Import models to ensure they are registered
+
 import "@/models/User";
 import "@/models/Product";
 import "@/models/Category";

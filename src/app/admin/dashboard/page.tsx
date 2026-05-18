@@ -2,14 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import { 
-  TrendingUp, 
   Users, 
   ShoppingBag, 
   DollarSign, 
   ArrowUpRight, 
   ArrowDownRight,
-  Package,
-  Clock
+  Package
 } from "lucide-react";
 import { 
   Bar, 
@@ -19,8 +17,7 @@ import {
   YAxis, 
   Tooltip,
   AreaChart,
-  Area,
-  CartesianGrid
+  Area
 } from "recharts";
 
 import { 

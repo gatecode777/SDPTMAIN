@@ -12,11 +12,11 @@ export async function uploadImages(formData: FormData): Promise<{ success: boole
 
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     
-    // Ensure directory exists
+    
     try {
       await mkdir(uploadDir, { recursive: true });
     } catch (err) {
-      // ignore if exists
+      
     }
 
     const urls: string[] = [];
@@ -25,7 +25,7 @@ export async function uploadImages(formData: FormData): Promise<{ success: boole
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Clean filename and add timestamp to avoid collisions
+      
       const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "");
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
       const ext = path.extname(cleanName);

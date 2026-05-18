@@ -41,7 +41,7 @@ export async function updateCategory(id: string, data: any) {
 export async function deleteCategory(id: string) {
   await dbConnect();
   try {
-    // Check if category has subcategories or products (optional but good)
+    
     await Category.findByIdAndDelete(id);
     revalidatePath("/admin/categories");
     revalidatePath("/shop");

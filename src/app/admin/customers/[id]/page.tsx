@@ -5,13 +5,10 @@ import { useRouter, useParams } from "next/navigation";
 import { 
   ArrowLeft, 
   Loader2, 
-  User, 
   Mail, 
   Calendar,
   ShoppingBag,
   DollarSign,
-  MapPin,
-  Clock,
   Package
 } from "lucide-react";
 import { format } from "date-fns";

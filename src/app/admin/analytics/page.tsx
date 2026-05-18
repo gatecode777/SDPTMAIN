@@ -1,8 +1,6 @@
 "use client";
 
 import { 
-  Bar, 
-  BarChart, 
   ResponsiveContainer, 
   XAxis, 
   YAxis, 
@@ -17,21 +15,13 @@ import {
   Line,
   Legend
 } from "recharts";
-import { 
-  TrendingUp, 
-  Users, 
-  ShoppingBag, 
-  DollarSign, 
-  Calendar,
-  Filter,
+import {
   Download,
   ArrowUpRight,
   ArrowDownRight
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useEffect, useState } from "react";
 import { getAnalyticsData } from "@/actions/analytics";

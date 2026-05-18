@@ -7,12 +7,10 @@ import {
   Tag, 
   Trash2, 
   Calendar, 
-  Percent, 
   DollarSign, 
   MoreHorizontal,
   CheckCircle2,
-  XCircle,
-  Clock
+  XCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -34,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { getCoupons, updateCouponStatus, deleteCoupon } from "@/actions/coupon";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";

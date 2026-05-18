@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const OrderSchema = new Schema(
   {
@@ -24,7 +24,7 @@ const OrderSchema = new Schema(
       country: String,
       phone: String,
     },
-    paymentMethod: { type: String, required: true }, // COD, CARD, UPI
+    paymentMethod: { type: String, required: true }, 
     paymentStatus: {
       type: String,
       enum: ["PENDING", "COMPLETED", "FAILED", "REFUNDED", "CANCELLED"],
@@ -51,7 +51,7 @@ const OrderSchema = new Schema(
         default: "NONE",
       },
       refundAmount: Number,
-      returnDeadline: Date, // 7 days after delivery
+      returnDeadline: Date, 
     },
     refundDetails: {
       refundMethod: { type: String, enum: ["ORIGINAL", "UPI", "NONE"], default: "NONE" },

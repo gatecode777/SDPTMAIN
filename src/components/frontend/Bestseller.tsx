@@ -41,7 +41,7 @@ const BestSeller = () => {
     try {
       const query: Record<string, any> = { status: "PUBLISHED" };
       
-      // Map tabs to categories or search terms
+      
       if (activeTab === "GPUs") query.name = { $regex: "Graphics", $options: "i" };
       if (activeTab === "CPUs") query.name = { $regex: "Processor|Intel|AMD", $options: "i" };
       if (activeTab === "Storage") query.name = { $regex: "SSD|HDD|NVMe", $options: "i" };

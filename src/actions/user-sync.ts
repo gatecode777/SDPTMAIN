@@ -66,7 +66,7 @@ export async function addUserAddress(address: any) {
 
     await dbConnect();
     
-    // Find user by email
+    
     const user = await User.findOne({ email: session.user.email });
     if (!user) return { success: false, message: "User profile not found in database." };
 
@@ -82,7 +82,7 @@ export async function addUserAddress(address: any) {
       isDefault: isFirst || address.isDefault || false
     };
 
-    // If this is default, unset others
+    
     if (newAddress.isDefault) {
       await User.updateOne(
         { _id: user._id },
@@ -91,7 +91,7 @@ export async function addUserAddress(address: any) {
     }
 
 
-    // Direct atomic push to ensure persistence
+    
     const updateResult = await User.findByIdAndUpdate(
       user._id,
       { $push: { addresses: newAddress } },
@@ -152,7 +152,7 @@ export async function updateAddress(addressId: string, addressData: any) {
       await User.updateOne({ _id: user._id }, { $set: { "addresses.$[].isDefault": false } });
     }
 
-    // Construct the update object for the specific subdocument
+    
 
     const updateQuery: any = {};
     for (const key in addressData) {

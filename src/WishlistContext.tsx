@@ -18,7 +18,7 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // 1. Initial Load from LocalStorage or Database
+  
   useEffect(() => {
     const loadWishlist = async () => {
       if (status === "authenticated") {
@@ -36,7 +36,7 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
     loadWishlist();
   }, [status, storageKey]);
 
-  // 2. Save/Sync whenever wishlist changes
+  
   useEffect(() => {
     if (isInitialLoad) return;
 

@@ -9,10 +9,8 @@ import {
   Trash2, 
   Layers,
   Loader2,
-  Save,
-  RotateCcw
+  Save
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,12 +25,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -44,7 +41,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { getCategories, deleteCategory, createCategory, updateCategory } from "@/actions/category";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -106,7 +102,7 @@ export default function CategoriesPage() {
       slug: formData.get("slug"),
       description: formData.get("description"),
       parent: formData.get("parent") === "none" ? null : formData.get("parent"),
-      isVisible: true, // Default to visible
+      isVisible: true, 
     };
 
     try {

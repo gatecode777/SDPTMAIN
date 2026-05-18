@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const CouponSchema = new Schema(
   {
@@ -6,7 +6,7 @@ const CouponSchema = new Schema(
     type: { type: String, enum: ["PERCENTAGE", "FIXED"], required: true },
     value: { type: Number, required: true },
     expiryDate: { type: Date, required: true },
-    usageLimit: { type: Number, default: 0 }, // 0 means unlimited
+    usageLimit: { type: Number, default: 0 }, 
     usedCount: { type: Number, default: 0 },
     minCartValue: { type: Number, default: 0 },
     applicableProducts: [{ type: Schema.Types.ObjectId, ref: "Product" }],

@@ -111,7 +111,7 @@ export async function createOrder(orderData: any) {
     const user = await User.findOne({ email: session.user.email });
     if (!user) return { success: false, message: "User not found" };
 
-    // Generate unique order ID
+    
     const orderId = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     const newOrder = new Order({
@@ -128,7 +128,7 @@ export async function createOrder(orderData: any) {
 
     await newOrder.save();
 
-    // Clear user cart in DB
+    
     await User.findByIdAndUpdate(user._id, { cart: [] });
 
     revalidatePath("/checkout");
@@ -147,7 +147,7 @@ export async function requestReturn(orderId: string, reason: string, orderData?:
     const order = await Order.findById(orderId);
     if (!order) return { success: false, message: "Order not found" };
 
-    // Check if within 7 days of delivery
+    
     if (order.orderStatus !== "DELIVERED") {
       return { success: false, message: "Only delivered orders can be returned" };
     }

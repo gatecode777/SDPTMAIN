@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useContext, useState } from "react";
-import Link from "next/link";
 import { FiHeart, FiShoppingBag, FiEye, FiStar } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";

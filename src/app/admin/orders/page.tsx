@@ -3,7 +3,6 @@
 import { cn } from "@/lib/utils";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Search,
@@ -41,7 +40,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { getOrders } from "@/actions/order";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -222,7 +221,7 @@ export default function OrdersPage() {
         </CardContent>
       </Card>
 
-      {/* Update Status Modal */}
+      {}
       {statusModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-background w-full max-w-md p-6 rounded-xl shadow-2xl border animate-in zoom-in-95 duration-200">

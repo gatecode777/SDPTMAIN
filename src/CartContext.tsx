@@ -15,7 +15,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<any[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // 1. Initial Load from LocalStorage or Database
+  
   useEffect(() => {
     const loadCart = async () => {
       if (status === "authenticated") {
@@ -41,7 +41,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     loadCart();
   }, [status, storageKey]);
 
-  // 2. Save/Sync whenever cart changes
+  
   useEffect(() => {
     if (isInitialLoad) return;
 
@@ -71,7 +71,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setCart((prev) => {
-      // Map 'id' to consistent 'id' (some products use _id)
+      
       const productId = product.id || product._id;
       const existing = prev.find((i) => i.id === productId);
       

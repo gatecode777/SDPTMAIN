@@ -44,7 +44,7 @@ export function AdminSidebar() {
 
   useEffect(() => {
     setMounted(true);
-    // Close sidebar on mobile when navigating
+    
     const handleResize = () => {
       if (window.innerWidth < 1024) {
         closeSidebar();
@@ -60,7 +60,7 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden"
@@ -117,7 +117,7 @@ export function AdminSidebar() {
                   <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "group-hover:text-primary")} />
                   {isSidebarOpen && <span className="text-sm font-medium">{item.label}</span>}
                   
-                  {/* Tooltip for collapsed state */}
+                  {}
                   {!isSidebarOpen && (
                      <div className="absolute left-14 hidden rounded-md bg-popover px-2 py-1 text-xs text-popover-foreground group-hover:block border shadow-md whitespace-nowrap z-50">
                       {item.label}

@@ -20,7 +20,7 @@ export async function getSettings() {
 export async function updateSettings(data: any) {
   await dbConnect();
   try {
-    let settings = await Settings.findOne({});
+    const settings = await Settings.findOne({});
     if (settings) {
       await Settings.findByIdAndUpdate(settings._id, data);
     } else {

@@ -72,9 +72,6 @@ const HeroSlider = () => {
                   <Link href="/shop" className="hero-btn hero-btn--primary">
                     Shop Now <FiArrowRight />
                   </Link>
-                  <Link href="/help" className="hero-btn hero-btn--outline">
-                    Build Your PC
-                  </Link>
                 </div>
               </div>
             </div>

@@ -15,7 +15,6 @@ import {
   Download,
   ShoppingBag
 } from "lucide-react";
-import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,8 +36,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProducts, deleteProduct, createProduct } from "@/actions/product";
+import { Card, CardContent } from "@/components/ui/card";
+import { getProducts, deleteProduct } from "@/actions/product";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 

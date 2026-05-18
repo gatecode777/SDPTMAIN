@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Server-side validation
+    
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!nameRegex.test(name)) {
       return NextResponse.json({ message: "Name should only contain letters and spaces" }, { status: 400 });
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
     await dbConnect();
 
-    // Check if user already exists
+    
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -35,16 +35,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // Hash password
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
       mobileNumber: phone,
-      role: "CUSTOMER", // Default role for frontend signup
+      role: "CUSTOMER", 
     });
 
     return NextResponse.json(

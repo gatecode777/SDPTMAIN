@@ -6,9 +6,9 @@ import { FiShield, FiFileText, FiLock, FiEye, FiShare2, FiAlertCircle, FiMail, F
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-[#fafafa] font-['Poppins'] pb-20">
-      {/* Banner */}
+      {}
       <div className="relative bg-[#0a0a0f] text-center overflow-hidden py-24 px-6 flex flex-col items-center justify-center min-h-[350px]">
-        {/* Background Gradient & Image equivalent */}
+        {}
         <div 
           className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1600&q=80')" }}
@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
           
           <div className="p-8 md:p-12 space-y-12 text-slate-600 leading-relaxed text-sm md:text-base">
             
-            {/* Intro */}
+            {}
             <div className="text-lg text-slate-700 bg-slate-50 p-6 rounded-xl border border-slate-100 border-l-4 border-l-blue-500">
               <p className="mb-2">
                 Welcome to <strong>SDPT Technologies Pvt. Ltd.</strong> (“SDPT”, “we”, “our”, or “us”).
@@ -42,7 +42,7 @@ export default function PrivacyPolicyPage() {
               </p>
             </div>
 
-            {/* Section 1 */}
+            {}
             <section className="space-y-5">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
@@ -75,7 +75,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {/* Section 2 */}
+            {}
             <section className="space-y-5">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
@@ -103,7 +103,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {/* Section 3 & 4 */}
+            {}
             <div className="grid md:grid-cols-2 gap-8">
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
               </section>
             </div>
 
-            {/* Section 5 & 6 */}
+            {}
             <section className="space-y-5">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
@@ -143,7 +143,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {/* Sections 7, 8, 9, 10 */}
+            {}
             <div className="grid md:grid-cols-2 gap-8 pt-4">
               <section className="space-y-3">
                 <h2 className="text-lg font-bold text-slate-900">7. User Rights</h2>
@@ -163,7 +163,7 @@ export default function PrivacyPolicyPage() {
               </section>
             </div>
 
-            {/* Contact Section */}
+            {}
             <section className="mt-12 bg-slate-900 text-white rounded-2xl p-8 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
               <div className="relative z-10">

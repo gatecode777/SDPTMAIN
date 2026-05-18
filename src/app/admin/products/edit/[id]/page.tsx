@@ -10,10 +10,7 @@ import {
   Loader2,
   Upload,
   X,
-  Plus,
-  Image as ImageIcon,
-  Save,
-  Eye
+  Save
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,8 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { getProductById, updateProduct } from "@/actions/product";
 import { uploadImages } from "@/actions/upload";

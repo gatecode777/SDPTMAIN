@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Invalid OTP" }, { status: 400 });
     }
 
-    // OTP is valid, remove it
+    
     await OTP.findOneAndDelete({ email });
 
     return NextResponse.json({ message: "OTP verified successfully" }, { status: 200 });

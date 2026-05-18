@@ -6,8 +6,6 @@ import {
   FiChevronDown, FiMonitor, FiCpu, FiHardDrive, FiHeadphones,
   FiHome, FiGrid, FiArrowRight
 } from "react-icons/fi";
-import { FaFacebookF } from "react-icons/fa";
-import { BsTwitterX, BsInstagram, BsYoutube } from "react-icons/bs";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { CartContext } from "@/CartContext";
@@ -162,7 +160,7 @@ const Header = () => {
       } else if (name.includes("monitor") || name.includes("display") || name.includes("screen") || name.includes("tv") || name.includes("output")) {
         groups.monitors.items.push(cat);
       } else {
-        groups.components.items.push(cat); // Fallback
+        groups.components.items.push(cat); 
       }
     });
 

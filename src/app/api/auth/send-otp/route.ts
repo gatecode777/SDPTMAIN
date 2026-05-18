@@ -15,22 +15,22 @@ export async function POST(req: Request) {
 
     await dbConnect();
 
-    // Check if user already exists
+    
     const User = (await import("@/models/User")).default;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json({ message: "The email already registered. Please use another email." }, { status: 400 });
     }
 
-    // Generate 4 digit OTP
+    
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
-    // Create or update OTP in database
+    
     await OTP.findOneAndDelete({ email });
     await OTP.create({ email, otp });
 
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-      // Remove quotes if they were mistakenly included in the env var string
+      
       const cleanPass = process.env.SMTP_PASS.replace(/['"]+/g, '');
       
       const transporter = nodemailer.createTransport({
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json({ message: "OTP sent successfully to your email" }, { status: 200 });
     } else {
-      // Fallback for missing SMTP config
+      
       console.log(`[DEV MODE] OTP for ${email}: ${otp}`);
       return NextResponse.json({ 
         message: "Development Mode: Use OTP 1234",
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
     }
   } catch (error: any) {
     console.error("OTP send error:", error);
-    // If SMTP fails, we still allow the user to proceed in Dev Mode with 1234
+    
     const dummyOtp = "1234";
     if (emailAddress) {
       await dbConnect();

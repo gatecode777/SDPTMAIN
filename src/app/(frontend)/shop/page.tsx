@@ -2,8 +2,7 @@
 
 import React, { useState, useContext, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { FiFilter, FiSearch, FiShoppingCart, FiHeart, FiEye, FiGrid, FiList, FiChevronDown } from "react-icons/fi";
+import { FiFilter, FiSearch, FiShoppingCart, FiHeart, FiEye, FiGrid, FiList } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import { getProducts } from "@/actions/product";
@@ -91,13 +90,13 @@ const ShopContent = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let query: any = { status: "PUBLISHED" };
+      const query: any = { status: "PUBLISHED" };
       
       if (selectedCat !== "All") {
         if (selectedCat.length === 24) {
           query.category = selectedCat;
         } else {
-          // If it's a name instead of ID, try to find the ID
+          
           const cat = categories.find(c => c.name.toLowerCase() === selectedCat.toLowerCase());
           if (cat) query.category = cat._id;
         }
@@ -111,7 +110,7 @@ const ShopContent = () => {
 
       const data = await getProducts(query, 1, 50);
       
-      let sortedProducts = [...data.products];
+      const sortedProducts = [...data.products];
       if (sortBy === "low") sortedProducts.sort((a, b) => a.offerPrice - b.offerPrice);
       if (sortBy === "high") sortedProducts.sort((a, b) => b.offerPrice - a.offerPrice);
       if (sortBy === "rating") sortedProducts.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
@@ -154,7 +153,6 @@ const ShopContent = () => {
 
       <div className="shop-header">
         <div className="shop-header-content">
-          <div className="breadcrumb">Home / Shop</div>
           <h1>{selectedCat !== "All" ? (categories.find(c => c._id === selectedCat)?.name || "Store") : "All Components"}</h1>
           <p>Showing {products.length} results</p>
         </div>

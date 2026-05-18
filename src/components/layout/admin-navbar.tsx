@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -34,7 +33,7 @@ const THEME_COLORS = [
   { name: "Slate", value: "0.45 0 0" },
 ];
 
-import { Search, Bell, User as UserIcon, Moon, Sun, Menu } from "lucide-react";
+import { Search, Bell, Moon, Sun, Menu } from "lucide-react";
 
 export function AdminNavbar() {
   const { data: session } = useSession();

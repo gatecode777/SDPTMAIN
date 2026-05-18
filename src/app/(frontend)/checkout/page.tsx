@@ -17,7 +17,7 @@ const CheckoutFlowContent = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [step, setStep] = useState(1); // 1: Address, 2: Payment
+  const [step, setStep] = useState(1); 
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<any | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -36,7 +36,7 @@ const CheckoutFlowContent = () => {
         const res = await getUserData();
         if (res.success) {
           setAddresses(res.addresses || []);
-          // Auto select default address
+          
           const def = res.addresses?.find((a: any) => a.isDefault);
           if (def) setSelectedAddress(def);
         }
@@ -139,7 +139,7 @@ const CheckoutFlowContent = () => {
     <div className="checkout-flow-page">
       <div className="checkout-flow-container">
         <div className="checkout-main">
-          {/* Progress Header */}
+          {}
           <div className="checkout-steps">
             <div className={`step ${step >= 1 ? 'active' : ''} ${step > 1 ? 'completed' : ''}`}>
               <div className="step-icon">{step > 1 ? <FiCheckCircle /> : <FiMapPin />}</div>

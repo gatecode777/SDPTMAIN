@@ -22,7 +22,7 @@ const CartPage = () => {
   
   const subtotal = cart.reduce((a: number, i: any) => a + (getNumPrice(i.price) * i.qty), 0);
   
-  // Calculate discount based on applied coupon
+  
   let discountAmount = 0;
   if (appliedCoupon) {
     if (appliedCoupon.type === "PERCENTAGE") {
@@ -40,7 +40,7 @@ const CartPage = () => {
     const fetchCoupons = async () => {
       const res = await getCoupons();
       if (res.success) {
-        // Filter out inactive or expired coupons
+        
         const active = res.coupons.filter((c: any) => {
           if (!c.isActive) return false;
           if (new Date(c.expiryDate) < new Date()) return false;
