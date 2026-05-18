@@ -24,6 +24,7 @@ const AccountContent = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [dbProfile, setDbProfile] = useState({ name: "", mobileNumber: "", image: "" });
 
   const user = session?.user;
 
@@ -41,9 +42,14 @@ const AccountContent = () => {
         const res = await getUserData();
         if (res.success) {
           setAddresses(res.addresses || []);
-          setMobileNumber(res.mobileNumber || "");
-          setProfileImage(res.image || "");
-          setNewName(session?.user?.name || "");
+          const nameToSet = res.name || session?.user?.name || "";
+          const mobileToSet = res.mobileNumber || "";
+          const imageToSet = res.image || "";
+          
+          setMobileNumber(mobileToSet);
+          setProfileImage(imageToSet);
+          setNewName(nameToSet);
+          setDbProfile({ name: nameToSet, mobileNumber: mobileToSet, image: imageToSet });
         }
         
         // Fetch Orders
@@ -262,8 +268,9 @@ const AccountContent = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    if (user?.name) setNewName(user.name);
-  }, [user]);
+    if (user?.name && !newName) setNewName(user.name);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.name]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -277,6 +284,7 @@ const AccountContent = () => {
 
       if (res.success) {
         await update({ name: newName, mobileNumber: mobileNumber, image: profileImage });
+        setDbProfile({ name: newName, mobileNumber: mobileNumber, image: profileImage });
         toast.success("Profile updated successfully!");
         setIsEditingProfile(false);
       } else {
@@ -611,9 +619,9 @@ const AccountContent = () => {
                         className="cancel-btn" 
                         onClick={() => {
                           setIsEditingProfile(false);
-                          setNewName(user?.name || "");
-                          setMobileNumber(session?.user?.mobileNumber || "");
-                          setProfileImage(user?.image || "");
+                          setNewName(dbProfile.name);
+                          setMobileNumber(dbProfile.mobileNumber);
+                          setProfileImage(dbProfile.image);
                         }}
                         disabled={isUpdating}
                       >

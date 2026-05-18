@@ -40,7 +40,7 @@ export async function getUserData() {
 
     await dbConnect();
 
-    const user = await User.findOne({ email: session.user.email }).select("cart wishlist addresses mobileNumber image");
+    const user = await User.findOne({ email: session.user.email }).select("name cart wishlist addresses mobileNumber image");
     if (!user) return { success: false, message: "User not found" };
 
 
@@ -51,7 +51,8 @@ export async function getUserData() {
       wishlist: user.wishlist,
       addresses: user.addresses,
       mobileNumber: user.mobileNumber || "",
-      image: user.image || ""
+      image: user.image || "",
+      name: user.name || ""
     }));
   } catch (error) {
     console.error("Failed to get user data:", error);
