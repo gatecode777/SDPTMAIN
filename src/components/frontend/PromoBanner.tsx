@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiArrowRight, FiZap } from "react-icons/fi";
 import "./PromoBanner.css";
 import { getBanner } from "@/actions/banner";
@@ -93,11 +94,14 @@ const PromoBanner = () => {
             </div>
           </div>
         </div>
-        <div className="promo-image">
-          <img 
+        <div className="promo-image" style={{ position: 'relative', minHeight: '400px' }}>
+          <Image 
             src={banner.imageUrl || "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80"} 
             alt="Promo Banner" 
+            fill
+            style={{ objectFit: 'contain' }}
             className="floating-img" 
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
           <div className="promo-circle-bg"></div>
         </div>

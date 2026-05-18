@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiArrowRight, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import "./Slider.css";
 
@@ -57,7 +58,16 @@ const HeroSlider = () => {
     <section className="hero">
       <div className="hero-track" style={{ transform: `translateX(-${index * 100}%)` }}>
         {slides.map((s, i) => (
-          <div className="hero-slide" key={i} style={{ backgroundImage: `url(${s.img})` }}>
+          <div className="hero-slide" key={i} style={{ position: "relative" }}>
+            <Image 
+              src={s.img} 
+              alt={s.title.replace('\n', ' ')} 
+              fill 
+              style={{ objectFit: 'cover' }} 
+              priority={i === 0} 
+              sizes="100vw"
+              quality={70}
+            />
             <div className="hero-overlay"></div>
             <div className="hero-container">
               <div className="hero-content">
@@ -79,16 +89,16 @@ const HeroSlider = () => {
         ))}
       </div>
 
-      <button className="hero-arrow hero-arrow--left" onClick={prev}>
+      <button aria-label="Previous Slide" className="hero-arrow hero-arrow--left" onClick={prev}>
         <FiChevronLeft size={22} />
       </button>
-      <button className="hero-arrow hero-arrow--right" onClick={next}>
+      <button aria-label="Next Slide" className="hero-arrow hero-arrow--right" onClick={next}>
         <FiChevronRight size={22} />
       </button>
 
       <div className="hero-dots">
         {slides.map((_, i) => (
-          <button key={i} className={`hero-dot ${i === index ? "active" : ""}`} onClick={() => goTo(i)}>
+          <button aria-label={`Go to slide ${i + 1}`} key={i} className={`hero-dot ${i === index ? "active" : ""}`} onClick={() => goTo(i)}>
             <span className="hero-dot-fill"></span>
           </button>
         ))}

@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiChevronLeft, FiChevronRight, FiArrowUpRight } from "react-icons/fi";
 import { getCategories } from "@/actions/category";
 import "./Categories.css";
@@ -75,8 +76,8 @@ const Categories = () => {
               <h2 className="cat-title">Shop by Components</h2>
             </div>
             <div className="cat-header-right">
-              <button className="cat-arrow" onClick={() => scroll("left")}><FiChevronLeft size={18} /></button>
-              <button className="cat-arrow" onClick={() => scroll("right")}><FiChevronRight size={18} /></button>
+              <button aria-label="Scroll left" className="cat-arrow" onClick={() => scroll("left")}><FiChevronLeft size={18} /></button>
+              <button aria-label="Scroll right" className="cat-arrow" onClick={() => scroll("right")}><FiChevronRight size={18} /></button>
             </div>
           </div>
 
@@ -89,11 +90,13 @@ const Categories = () => {
               ) : categories.length > 0 ? (
                 categories.map((cat) => (
                   <Link href={`/shop?cat=${cat._id}`} className="cat-card" key={cat._id}>
-                    <div className="cat-card-img">
-                      <img 
+                    <div className="cat-card-img" style={{ position: "relative" }}>
+                      <Image 
                         src={cat.image || defaultImages[cat.name] || "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=600&q=80"} 
                         alt={cat.name} 
-                        loading="lazy" 
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        sizes="(max-width: 768px) 100vw, 250px"
                       />
                     </div>
                     <div className="cat-card-info">

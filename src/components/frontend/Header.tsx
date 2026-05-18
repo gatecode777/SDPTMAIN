@@ -92,21 +92,35 @@ const Header = () => {
   const [showMobileBar, setShowMobileBar] = useState(false);
 
   useEffect(() => {
+    let cachedTriggerHeight = 0;
+
+    const calculateTriggerHeight = () => {
+      if (pathname === "/") {
+        const heroEl = (document.querySelector('.slider') || document.querySelector('.hero')) as HTMLElement;
+        cachedTriggerHeight = heroEl ? heroEl.offsetHeight * 0.8 : window.innerHeight * 0.8;
+      }
+    };
+
+    calculateTriggerHeight();
+    window.addEventListener("resize", calculateTriggerHeight);
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
       if (pathname === "/") {
-        const heroEl = (document.querySelector('.slider') || document.querySelector('.hero')) as HTMLElement;
-        const triggerHeight = heroEl ? heroEl.offsetHeight * 0.8 : window.innerHeight * 0.8;
-        setShowMobileBar(window.scrollY > triggerHeight);
+        setShowMobileBar(window.scrollY > cachedTriggerHeight);
       } else {
         setShowMobileBar(true);
       }
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", calculateTriggerHeight);
+    };
   }, [pathname]);
 
   useEffect(() => {
@@ -171,12 +185,12 @@ const Header = () => {
     <>
       <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
         <div className="header-inner">
-          <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button aria-label="Toggle Menu" className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
           </button>
 
           <Link href="/" className="logo">
-            <Image src={logo} alt="SDTP Logo" className="logo-img" width={150} height={40} />
+            <Image src={logo} alt="SDTP Logo" className="logo-img" width={150} height={40} priority />
           </Link>
 
           <nav className="desktop-nav">
@@ -215,13 +229,13 @@ const Header = () => {
           </nav>
 
           <div className="header-icons">
-            <button className="icon-btn desktop-only" onClick={() => setSearchOpen(true)}><FiSearch size={22} /></button>
-            <button className="icon-btn" onClick={handleAccountClick}><FiUser size={22} /></button>
-            <button className="icon-btn desktop-only" onClick={() => handleNav("/wishlist")}>
+            <button aria-label="Search" className="icon-btn desktop-only" onClick={() => setSearchOpen(true)}><FiSearch size={22} /></button>
+            <button aria-label="User Account" className="icon-btn" onClick={handleAccountClick}><FiUser size={22} /></button>
+            <button aria-label="Wishlist" className="icon-btn desktop-only" onClick={() => handleNav("/wishlist")}>
               <FiHeart size={22} />
               {mounted && wishlistCount > 0 && <span className="cart-badge wishlist-badge">{wishlistCount}</span>}
             </button>
-            <button className="icon-btn cart-btn" onClick={() => handleNav("/cart")}>
+            <button aria-label="Cart" className="icon-btn cart-btn" onClick={() => handleNav("/cart")}>
               <FiShoppingBag size={22} />
               {mounted && cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </button>
@@ -240,9 +254,9 @@ const Header = () => {
       <div className={`mobile-drawer ${mobileMenuOpen ? "mobile-drawer--open" : ""}`}>
         <div className="drawer-header">
           <span className="drawer-logo">
-            <Image src={logo} alt="SDTP Logo" className="drawer-logo-img" width={120} height={32} />
+            <Image src={logo} alt="SDTP Logo" className="drawer-logo-img" width={120} height={32} priority />
           </span>
-          <button className="drawer-close" onClick={() => setMobileMenuOpen(false)}><FiX size={22} /></button>
+          <button aria-label="Close Menu" className="drawer-close" onClick={() => setMobileMenuOpen(false)}><FiX size={22} /></button>
         </div>
         <div className="drawer-search">
           <form onSubmit={handleSearch} className="drawer-search-form">
@@ -285,7 +299,7 @@ const Header = () => {
           <div className="search-modal" onClick={(e) => e.stopPropagation()}>
             <div className="search-modal-header">
               <h3>Search Our Store</h3>
-              <button className="search-close" onClick={() => setSearchOpen(false)}><FiX size={20} /></button>
+              <button aria-label="Close Search" className="search-close" onClick={() => setSearchOpen(false)}><FiX size={20} /></button>
             </div>
             <form onSubmit={handleSearch} className="search-form">
               <div className="search-input-wrap">

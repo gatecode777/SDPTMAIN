@@ -28,10 +28,10 @@ const Footer = () => {
             <p className="ft-contact"><FiMail size={14} /> info@gatecode.in</p>
             <p className="ft-contact"><FiPhone size={14} /> +91 8502888838</p>
             <div className="ft-socials">
-              <a href="#" className="ft-social"><FaFacebookF /></a>
-              <a href="#" className="ft-social"><FaInstagram /></a>
-              <a href="#" className="ft-social"><BsTwitterX /></a>
-              <a href="#" className="ft-social"><FaYoutube /></a>
+              <a href="#" className="ft-social" aria-label="Facebook"><FaFacebookF /></a>
+              <a href="#" className="ft-social" aria-label="Instagram"><FaInstagram /></a>
+              <a href="#" className="ft-social" aria-label="Twitter"><BsTwitterX /></a>
+              <a href="#" className="ft-social" aria-label="YouTube"><FaYoutube /></a>
             </div>
           </div>
 

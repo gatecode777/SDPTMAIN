@@ -2,6 +2,7 @@
 
 import React, { useContext, useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import "./Bestseller.css";
 import { FiShoppingCart, FiHeart, FiEye } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
@@ -101,13 +102,14 @@ const BestSeller = () => {
           <div className="bs-grid">
             {products.map((p) => (
               <div className="pc" key={p._id}>
-                <div className="pc-img-wrap" onClick={() => { setSelectedProduct(p); setIsModalOpen(true); }} style={{ cursor: 'pointer' }}>
-                  <img src={p.thumbnail} alt={p.name} className="pc-img" loading="lazy" />
+                <div className="pc-img-wrap" onClick={() => { setSelectedProduct(p); setIsModalOpen(true); }} style={{ cursor: 'pointer', position: 'relative' }}>
+                  <Image src={p.thumbnail || "/images/placeholder.png"} alt={p.name} fill className="pc-img" style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 300px" />
                   <div className="pc-overlay"></div>
                   {p.badge && <span className="pc-badge">{p.badge}</span>}
                   <div className="pc-actions" onClick={(e) => e.stopPropagation()}>
                     <button 
                       className="pc-action pc-action--cart" 
+                      aria-label="Add to cart"
                       onClick={() => addToCart({
                         id: p._id,
                         name: p.name,
@@ -121,6 +123,7 @@ const BestSeller = () => {
                     </button>
                     <button 
                       className={`pc-action ${isInWishlist(p._id) ? "pc-action--liked" : ""}`} 
+                      aria-label="Wishlist"
                       onClick={() => toggleWishlist(p._id)} 
                       title="Wishlist"
                     >
@@ -128,6 +131,7 @@ const BestSeller = () => {
                     </button>
                     <button 
                       className="pc-action" 
+                      aria-label="Quick view"
                       onClick={() => {
                         setSelectedProduct(p);
                         setIsModalOpen(true);

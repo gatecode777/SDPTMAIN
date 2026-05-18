@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useState } from "react";
+import Image from "next/image";
 import { FiHeart, FiShoppingBag, FiEye, FiStar } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
@@ -40,19 +41,20 @@ const ProductCard = ({ product, view }: { product: Product; view: string }) => {
 
   return (
     <div className={`pcard ${view === "list" ? "pcard--list" : ""}`}>
-      <div className="pcard-img-wrap" onClick={() => setIsModalOpen(true)} style={{ cursor: 'pointer' }}>
-        <img src={product.thumbnail} alt={product.name} loading="lazy" className="pcard-img" />
+      <div className="pcard-img-wrap" onClick={() => setIsModalOpen(true)} style={{ cursor: 'pointer', position: 'relative' }}>
+        <Image src={product.thumbnail || "/images/placeholder.png"} alt={product.name} fill className="pcard-img" style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 250px" />
         {product.badge && <span className="pcard-badge">{product.badge}</span>}
         {discount > 0 && <span className="pcard-discount">-{discount}%</span>}
         <div className="pcard-actions" onClick={(e) => e.stopPropagation()}>
           <button
             className={`pcard-act ${isInWishlist(product._id) ? "pcard-act--wished" : ""}`}
+            aria-label="Wishlist"
             onClick={() => toggleWishlist(product._id)}
             title="Wishlist"
           >
             <FiHeart size={14} />
           </button>
-          <button className="pcard-act" onClick={() => setIsModalOpen(true)} title="Quick View">
+          <button className="pcard-act" aria-label="Quick View" onClick={() => setIsModalOpen(true)} title="Quick View">
             <FiEye size={14} />
           </button>
         </div>

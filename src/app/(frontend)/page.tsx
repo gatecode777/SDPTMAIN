@@ -1,4 +1,3 @@
-"use client";
 
 import Slider from "@/components/frontend/Slider";
 import Features from "@/components/frontend/Features";
