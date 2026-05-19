@@ -25,12 +25,12 @@ export async function getAnalyticsData() {
     
     
     
-    const monthlyData: Record<string, { month: string; sales: number; profit: number }> = {};
+    const monthlyData: Record<string, { month: string; sales: number; profit: number; ordersCount: number }> = {};
     const now = new Date();
     for (let i = 6; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const mName = monthNames[d.getMonth()];
-      monthlyData[mName] = { month: mName, sales: 0, profit: 0 };
+      monthlyData[mName] = { month: mName, sales: 0, profit: 0, ordersCount: 0 };
     }
 
     orders.forEach((order: any) => {
@@ -40,6 +40,7 @@ export async function getAnalyticsData() {
         monthlyData[mName].sales += order.totalAmount || 0;
         
         monthlyData[mName].profit += (order.totalAmount || 0) * 0.15;
+        monthlyData[mName].ordersCount += 1;
       }
     });
 
@@ -101,6 +102,24 @@ export async function getAnalyticsData() {
     
     const totalSales = orders.reduce((acc: number, o: any) => acc + (o.totalAmount || 0), 0);
     const avgOrderValue = orders.length > 0 ? totalSales / orders.length : 0;
+
+    // MoM Growth math
+    const currentMonthData = salesHistory[salesHistory.length - 1];
+    const prevMonthData = salesHistory[salesHistory.length - 2];
+    
+    const salesGrowth = prevMonthData?.sales > 0 
+      ? ((currentMonthData.sales - prevMonthData.sales) / prevMonthData.sales) * 100 
+      : (currentMonthData?.sales > 0 ? 100 : 0);
+
+    const ordersGrowth = prevMonthData?.ordersCount > 0
+      ? ((currentMonthData.ordersCount - prevMonthData.ordersCount) / prevMonthData.ordersCount) * 100
+      : (currentMonthData?.ordersCount > 0 ? 100 : 0);
+
+    const currentUserMonth = userGrowth[userGrowth.length - 1];
+    const prevUserMonth = userGrowth[userGrowth.length - 2];
+    const customerGrowth = prevUserMonth?.count > 0
+      ? ((currentUserMonth.count - prevUserMonth.count) / prevUserMonth.count) * 100
+      : (currentUserMonth?.count > 0 ? 100 : 0);
     
     
     const stats = {
@@ -108,6 +127,10 @@ export async function getAnalyticsData() {
       avgOrderValue,
       totalOrders: orders.length,
       totalCustomers: users.length,
+      currentMonthOrders: currentMonthData?.ordersCount || 0,
+      revenueGrowth: (salesGrowth >= 0 ? "+" : "") + salesGrowth.toFixed(1) + "%",
+      ordersGrowth: (ordersGrowth >= 0 ? "+" : "") + ordersGrowth.toFixed(1) + "%",
+      customerGrowth: (customerGrowth >= 0 ? "+" : "") + customerGrowth.toFixed(1) + "%",
       conversionRate: "3.2%", 
       bounceRate: "42.1%", 
       sessions: "48.2k" 

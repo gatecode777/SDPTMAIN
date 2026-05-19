@@ -184,30 +184,30 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard 
           title="Total Revenue" 
-          value={loading ? <Skeleton className="h-8 w-24" /> : `$${stats?.revenue?.toLocaleString()}`} 
-          change="+20.1%" 
-          trend="up"
+          value={loading ? <Skeleton className="h-8 w-24" /> : `₹${stats?.revenue?.toLocaleString("en-IN")}`} 
+          change={analytics?.stats?.revenueGrowth || "+0.0%"} 
+          trend={(parseFloat(analytics?.stats?.revenueGrowth) || 0) >= 0 ? "up" : "down"}
           icon={DollarSign}
         />
         <StatCard 
           title="Orders" 
-          value={loading ? <Skeleton className="h-8 w-24" /> : `+${stats?.orders}`} 
-          change="+180.1%" 
-          trend="up"
+          value={loading ? <Skeleton className="h-8 w-24" /> : stats?.orders} 
+          change={analytics?.stats?.ordersGrowth || "+0.0%"} 
+          trend={(parseFloat(analytics?.stats?.ordersGrowth) || 0) >= 0 ? "up" : "down"}
           icon={ShoppingBag}
         />
         <StatCard 
           title="Customers" 
-          value={loading ? <Skeleton className="h-8 w-24" /> : `+${stats?.customers}`} 
-          change="+19%" 
-          trend="up"
+          value={loading ? <Skeleton className="h-8 w-24" /> : stats?.customers} 
+          change={analytics?.stats?.customerGrowth || "+0.0%"} 
+          trend={(parseFloat(analytics?.stats?.customerGrowth) || 0) >= 0 ? "up" : "down"}
           icon={Users}
         />
         <StatCard 
           title="Active Products" 
           value={loading ? <Skeleton className="h-8 w-24" /> : stats?.products} 
-          change="-2%" 
-          trend="down"
+          change="+0.0%" 
+          trend="up"
           icon={Package}
         />
       </div>
@@ -261,7 +261,7 @@ export default function DashboardPage() {
         <Card className="col-span-3 shadow-sm border-none bg-card/50 backdrop-blur">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
-            <CardDescription>You made 265 sales this month.</CardDescription>
+            <CardDescription>You made {analytics?.stats?.currentMonthOrders || 0} sales this month.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
@@ -288,7 +288,7 @@ export default function DashboardPage() {
                       <p className="text-sm font-medium leading-none">{order.customer?.name}</p>
                       <p className="text-sm text-muted-foreground">{order.customer?.email}</p>
                     </div>
-                    <div className="ml-auto font-medium">+${order.totalAmount.toFixed(2)}</div>
+                    <div className="ml-auto font-medium">+₹{order.totalAmount.toLocaleString("en-IN")}</div>
                   </div>
                 ))
               )}
@@ -374,7 +374,7 @@ export default function DashboardPage() {
                           {order.orderStatus.toLowerCase()}
                         </Badge>
                       </TableCell>
-                      <TableCell>${order.totalAmount.toFixed(2)}</TableCell>
+                      <TableCell>₹{order.totalAmount.toLocaleString("en-IN")}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="ghost" size="sm" onClick={() => window.location.href = `/admin/orders/${order._id}`}>Details</Button>
                       </TableCell>
