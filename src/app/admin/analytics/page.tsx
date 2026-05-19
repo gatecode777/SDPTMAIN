@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { getAnalyticsData } from "@/actions/analytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"];
 
@@ -48,6 +49,75 @@ export default function AnalyticsPage() {
 
   const fmt = (v: number) => `₹${v.toLocaleString("en-IN")}`;
 
+  const handleExportData = () => {
+    if (!data) {
+      toast.error("No analytics data available to export");
+      return;
+    }
+
+    try {
+      let csvContent = "";
+      
+      // Title
+      csvContent += "SDPT Store Analytics Summary Report\n";
+      csvContent += `Generated At,${new Date().toLocaleString()}\n\n`;
+      
+      // Core Stats
+      csvContent += "METRIC,VALUE\n";
+      csvContent += `Total Sales,₹${(data.stats?.totalSales || 0).toLocaleString("en-IN")}\n`;
+      csvContent += `Avg. Order Value,₹${(data.stats?.avgOrderValue || 0).toLocaleString("en-IN")}\n`;
+      csvContent += `Total Orders,${data.stats?.totalOrders || 0}\n`;
+      csvContent += `Total Customers,${data.stats?.totalCustomers || 0}\n\n`;
+      
+      // Sales History
+      if (data.salesHistory && data.salesHistory.length > 0) {
+        csvContent += "SALES & ESTIMATED PROFIT HISTORY\n";
+        csvContent += "Month,Gross Sales,Estimated Profit (15%)\n";
+        data.salesHistory.forEach((item: any) => {
+          csvContent += `${item.month},₹${item.sales},₹${item.profit}\n`;
+        });
+        csvContent += "\n";
+      }
+
+      // Sales By Category
+      if (data.salesByCategory && data.salesByCategory.length > 0) {
+        csvContent += "SALES BY CATEGORY\n";
+        csvContent += "Category,Sales Value\n";
+        data.salesByCategory.forEach((item: any) => {
+          const catName = item.name ? `"${item.name.replace(/"/g, '""')}"` : "Uncategorized";
+          csvContent += `${catName},₹${item.value}\n`;
+        });
+        csvContent += "\n";
+      }
+
+      // User Growth
+      if (data.userGrowth && data.userGrowth.length > 0) {
+        csvContent += "USER GROWTH HISTORY\n";
+        csvContent += "Month,New Customers Registered\n";
+        data.userGrowth.forEach((item: any) => {
+          csvContent += `${item.month},${item.count}\n`;
+        });
+        csvContent += "\n";
+      }
+
+      // Create Blob and Download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `analytics_report_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success("Analytics data exported successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to export analytics data");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -59,7 +129,7 @@ export default function AnalyticsPage() {
           <Button variant="outline" onClick={fetchAnalytics} disabled={loading}>
             {loading ? "Refreshing..." : "Refresh Data"}
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleExportData} disabled={loading}>
             <Download className="mr-2 h-4 w-4" /> Export
           </Button>
         </div>
@@ -104,7 +174,7 @@ export default function AnalyticsPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data?.salesHistory || []}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.1)" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(156, 163, 175, 0.15)" />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 12}} />
                   <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12}} tickFormatter={(v) => `₹${v}`} />
                   <Tooltip formatter={(v: any) => fmt(v)} />
@@ -162,11 +232,11 @@ export default function AnalyticsPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data?.userGrowth || []}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted-foreground)/0.1)" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(156, 163, 175, 0.15)" />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="count" name="New Users" stroke="hsl(var(--primary))" strokeWidth={3} dot={{r: 4, fill: "hsl(var(--primary))"}} />
+                  <Line type="monotone" dataKey="count" name="New Users" stroke="var(--primary)" strokeWidth={3} dot={{r: 4, fill: "var(--primary)"}} />
                 </LineChart>
               </ResponsiveContainer>
             )}

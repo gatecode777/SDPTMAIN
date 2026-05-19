@@ -12,7 +12,6 @@ import {
   Trash2, 
   Eye,
   Filter,
-  Download,
   ShoppingBag
 } from "lucide-react";
 
@@ -89,9 +88,6 @@ export default function ProductsPage() {
           <p className="text-muted-foreground">Manage your product catalog and inventory.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="hidden sm:flex">
-            <Download className="mr-2 h-4 w-4" /> Export CSV
-          </Button>
           <Link href="/admin/products/create">
             <Button>
               <Plus className="mr-2 h-4 w-4" /> Add Product

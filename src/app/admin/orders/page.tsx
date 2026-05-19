@@ -106,6 +106,50 @@ export default function OrdersPage() {
     }
   };
 
+  const handleExportOrders = () => {
+    if (orders.length === 0) {
+      toast.error("No orders available to export");
+      return;
+    }
+
+    try {
+      let csvContent = "";
+      
+      // Headers
+      csvContent += "Order ID,Customer Name,Customer Email,Date,Total Amount (₹),Order Status,Payment Status,Payment Method\n";
+      
+      // Rows
+      orders.forEach((order: any) => {
+        const orderId = order.orderId ? `"${order.orderId.replace(/"/g, '""')}"` : "";
+        const name = order.customer?.name ? `"${order.customer.name.replace(/"/g, '""')}"` : "";
+        const email = order.customer?.email ? `"${order.customer.email.replace(/"/g, '""')}"` : "";
+        const date = order.createdAt ? new Date(order.createdAt).toISOString().split('T')[0] : "";
+        const total = order.totalAmount || 0;
+        const oStatus = order.orderStatus || "";
+        const pStatus = order.paymentStatus || "";
+        const pMethod = order.paymentMethod || "";
+        
+        csvContent += `${orderId},${name},${email},${date},${total},${oStatus},${pStatus},${pMethod}\n`;
+      });
+
+      // Download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `orders_export_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success("Orders data exported successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to export orders data");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -113,7 +157,7 @@ export default function OrdersPage() {
           <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
           <p className="text-muted-foreground">Manage and track customer orders.</p>
         </div>
-        <Button variant="outline">
+        <Button variant="outline" onClick={handleExportOrders} disabled={loading}>
           <Download className="mr-2 h-4 w-4" /> Export
         </Button>
       </div>

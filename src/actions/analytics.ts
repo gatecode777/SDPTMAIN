@@ -9,7 +9,15 @@ export async function getAnalyticsData() {
   await dbConnect();
 
   try {
-    const orders = await Order.find({ orderStatus: { $ne: "CANCELLED" } }).populate("items.product").lean();
+    const orders = await Order.find({ orderStatus: { $ne: "CANCELLED" } })
+      .populate({
+        path: "items.product",
+        populate: {
+          path: "category",
+          model: "Category"
+        }
+      })
+      .lean();
     const users = await User.find({ role: "CUSTOMER" }).lean();
     const categories = await Category.find().lean();
 
@@ -49,6 +57,29 @@ export async function getAnalyticsData() {
 
     const salesByCategory = Object.entries(categoryStats).map(([name, value]) => ({ name, value }));
 
+    // 4. Sales by Day (past 7 days, in chronological order)
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const salesByDayList: { day: string; dateStr: string; sales: number }[] = [];
+    const tempDate = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(tempDate.getDate() - i);
+      const dayName = dayNames[d.getDay()];
+      const dateStr = d.toISOString().split('T')[0];
+      salesByDayList.push({ day: dayName, dateStr, sales: 0 });
+    }
+
+    orders.forEach((order: any) => {
+      if (!order.createdAt) return;
+      const orderDateStr = new Date(order.createdAt).toISOString().split('T')[0];
+      const match = salesByDayList.find(item => item.dateStr === orderDateStr);
+      if (match) {
+        match.sales += order.totalAmount || 0;
+      }
+    });
+    
+    const salesByDay = salesByDayList.map(({ day, sales }) => ({ day, sales }));
+
     
     const userGrowthData: Record<string, { month: string; count: number }> = {};
     for (let i = 6; i >= 0; i--) {
@@ -86,6 +117,7 @@ export async function getAnalyticsData() {
       success: true,
       salesHistory,
       salesByCategory,
+      salesByDay,
       userGrowth,
       stats
     };

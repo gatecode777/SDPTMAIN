@@ -17,7 +17,8 @@ import {
   YAxis, 
   Tooltip,
   AreaChart,
-  Area
+  Area,
+  CartesianGrid
 } from "recharts";
 
 import { 
@@ -64,6 +65,7 @@ import { getProducts } from "@/actions/product";
 import { getCustomers } from "@/actions/customer";
 import { getAnalyticsData } from "@/actions/analytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
@@ -104,6 +106,66 @@ export default function DashboardPage() {
       setLoading(false);
     }
   }
+
+  const handleDownloadReport = () => {
+    if (loading || !stats) {
+      toast.error("Dashboard data is still loading. Please wait.");
+      return;
+    }
+
+    try {
+      let csvContent = "";
+      
+      // Title and Meta
+      csvContent += "SDPT Dashboard Summary Report\n";
+      csvContent += `Generated At,${new Date().toLocaleString()}\n\n`;
+      
+      // Stats Section
+      csvContent += "METRIC,VALUE\n";
+      csvContent += `Total Revenue,₹${stats.revenue.toLocaleString("en-IN")}\n`;
+      csvContent += `Total Orders,${stats.orders}\n`;
+      csvContent += `Total Customers,${stats.customers}\n`;
+      csvContent += `Active Products,${stats.products}\n\n`;
+      
+      // Sales History Section
+      if (analytics?.salesHistory && analytics.salesHistory.length > 0) {
+        csvContent += "SALES HISTORY BY MONTH\n";
+        csvContent += "Month,Sales\n";
+        analytics.salesHistory.forEach((item: any) => {
+          csvContent += `${item.month},₹${item.sales}\n`;
+        });
+        csvContent += "\n";
+      }
+      
+      // Sales by Category Section
+      if (analytics?.salesByCategory && analytics.salesByCategory.length > 0) {
+        csvContent += "SALES BY CATEGORY\n";
+        csvContent += "Category,Sales Value\n";
+        analytics.salesByCategory.forEach((item: any) => {
+          const catName = item.name ? `"${item.name.replace(/"/g, '""')}"` : "Uncategorized";
+          csvContent += `${catName},₹${item.value}\n`;
+        });
+        csvContent += "\n";
+      }
+
+      // Create Blob and Download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `dashboard_report_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success("Report downloaded successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate report");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -112,8 +174,10 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Welcome back, here's what's happening today.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline">Download Report</Button>
-          <Button>View Store</Button>
+          <Button variant="outline" onClick={handleDownloadReport} disabled={loading}>
+            Download Report
+          </Button>
+          <Button onClick={() => window.open("/", "_blank")}>View Store</Button>
         </div>
       </div>
 
@@ -160,10 +224,11 @@ export default function DashboardPage() {
                 <AreaChart data={analytics?.salesHistory || []}>
                   <defs>
                     <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
                   <XAxis 
                     dataKey="month" 
                     stroke="#888888" 
@@ -182,7 +247,7 @@ export default function DashboardPage() {
                   <Area 
                     type="monotone" 
                     dataKey="sales" 
-                    stroke="hsl(var(--primary))" 
+                    stroke="var(--primary)" 
                     strokeWidth={2}
                     fillOpacity={1} 
                     fill="url(#colorTotal)" 
@@ -233,19 +298,32 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-         <Card className="col-span-3">
+         <Card className="col-span-3 shadow-sm border-none bg-card/50 backdrop-blur">
           <CardHeader>
             <CardTitle>Sales by Day</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={analytics?.salesByCategory || []}>
-                  <XAxis dataKey="name" hide />
-                  <YAxis hide />
+                <BarChart data={analytics?.salesByDay || []}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+                  <XAxis 
+                    dataKey="day" 
+                    stroke="#888888" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false} 
+                  />
+                  <YAxis 
+                    stroke="#888888" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false} 
+                    tickFormatter={(value) => `₹${value.toLocaleString()}`}
+                  />
                   <Bar 
-                    dataKey="value" 
-                    fill="hsl(var(--primary))" 
+                    dataKey="sales" 
+                    fill="var(--primary)" 
                     radius={[4, 4, 0, 0]} 
                   />
                   <Tooltip formatter={(v: any) => `₹${v.toLocaleString()}`} />

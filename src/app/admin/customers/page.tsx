@@ -65,6 +65,49 @@ export default function CustomersPage() {
     c.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleExportData = () => {
+    const listToExport = filteredCustomers.length > 0 ? filteredCustomers : customers;
+    if (listToExport.length === 0) {
+      toast.error("No customer data available to export");
+      return;
+    }
+
+    try {
+      let csvContent = "";
+      
+      // Headers
+      csvContent += "Customer ID,Name,Email,Joined Date,Orders Count,Total Spent ($)\n";
+      
+      // Rows
+      listToExport.forEach((customer: any) => {
+        const id = customer._id || "";
+        const name = customer.name ? `"${customer.name.replace(/"/g, '""')}"` : "";
+        const email = customer.email ? `"${customer.email.replace(/"/g, '""')}"` : "";
+        const joinedDate = customer.createdAt ? new Date(customer.createdAt).toISOString().split('T')[0] : "";
+        const orderCount = customer.orderCount || 0;
+        const totalSpend = customer.totalSpend || 0;
+        
+        csvContent += `${id},${name},${email},${joinedDate},${orderCount},${totalSpend.toFixed(2)}\n`;
+      });
+
+      // Download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `customers_export_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success("Customers data exported successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to export customer data");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -72,7 +115,7 @@ export default function CustomersPage() {
           <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
           <p className="text-muted-foreground">Manage your customer database and viewing their activity.</p>
         </div>
-        <Button variant="outline">
+        <Button variant="outline" onClick={handleExportData} disabled={loading}>
           <Download className="mr-2 h-4 w-4" /> Export Data
         </Button>
       </div>
