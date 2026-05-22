@@ -10,19 +10,19 @@ const slides = [
   {
     title: "Unleash\nGaming Power",
     desc: "High-performance gaming PCs with RTX graphics and ultra-fast processors.",
-    img: "/images/pc.png",
+    img: "/images/pc.webp",
     accent: "GAMING SERIES",
   },
   {
     title: "Build Your\nDream PC",
     desc: "Custom rigs designed for creators, gamers, and professionals.",
-    img: "/images/pc2.png",
+    img: "/images/pc2.webp",
     accent: "CUSTOM BUILDS",
   },
   {
     title: "Next Gen\nPerformance",
     desc: "Experience lightning speed with SSD, DDR5 RAM, and advanced cooling.",
-    img: "/images/pc3.png",
+    img: "/images/pc3.webp",
     accent: "NEW ARRIVALS",
   },
 ];

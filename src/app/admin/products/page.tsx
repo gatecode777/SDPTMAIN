@@ -39,8 +39,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getProducts, deleteProduct } from "@/actions/product";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSession } from "next-auth/react";
 
 export default function ProductsPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.products || { view: false, create: false, edit: false, delete: false };
+
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -87,13 +92,15 @@ export default function ProductsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Products</h1>
           <p className="text-muted-foreground">Manage your product catalog and inventory.</p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/admin/products/create">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add Product
-            </Button>
-          </Link>
-        </div>
+        {(isSuperAdmin || permissions.create) && (
+          <div className="flex gap-2">
+            <Link href="/admin/products/create">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" /> Add Product
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
@@ -167,9 +174,9 @@ export default function ProductsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-semibold">${product.offerPrice.toFixed(2)}</span>
+                        <span className="font-semibold">₹{product.offerPrice.toFixed(2)}</span>
                         {product.discountPercentage > 0 && (
-                          <span className="text-[10px] text-muted-foreground line-through">${product.mrp.toFixed(2)}</span>
+                          <span className="text-[10px] text-muted-foreground line-through">₹{product.mrp.toFixed(2)}</span>
                         )}
                       </div>
                     </TableCell>
@@ -199,16 +206,22 @@ export default function ProductsPage() {
                           <DropdownMenuItem onClick={() => window.location.href = `/admin/products/edit/${product._id}`}>
                             <Eye className="mr-2 h-4 w-4" /> View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => window.location.href = `/admin/products/edit/${product._id}`}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            className="text-red-600 focus:text-red-600"
-                            onClick={() => handleDelete(product._id)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
+                          {(isSuperAdmin || permissions.edit) && (
+                            <DropdownMenuItem onClick={() => window.location.href = `/admin/products/edit/${product._id}`}>
+                              <Edit className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                          )}
+                          {(isSuperAdmin || permissions.delete) && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                className="text-red-600 focus:text-red-600"
+                                onClick={() => handleDelete(product._id)}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

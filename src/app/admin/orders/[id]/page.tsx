@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter, useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   ArrowLeft,
   Loader2,
@@ -29,6 +30,11 @@ import { Separator } from "@/components/ui/separator";
 import { getOrders } from "@/actions/order";
 
 export default function OrderDetailsPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.orders || { view: false, create: false, edit: false, delete: false };
+  const canEdit = isSuperAdmin || permissions.edit;
+
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
@@ -72,6 +78,10 @@ export default function OrderDetailsPage() {
   };
 
   const handleApproveReturn = async () => {
+    if (!canEdit) {
+      toast.error("You do not have permission to approve returns.");
+      return;
+    }
     const { approveReturn } = await import("@/actions/order");
     setLoading(true);
     try {
@@ -91,6 +101,10 @@ export default function OrderDetailsPage() {
   };
 
   const handleUpdateStatus = async (status: string) => {
+    if (!canEdit) {
+      toast.error("You do not have permission to update order status.");
+      return;
+    }
     const { updateOrderStatus } = await import("@/actions/order");
     setLoading(true);
     try {
@@ -110,6 +124,10 @@ export default function OrderDetailsPage() {
   };
 
   const handleUpdateRefundStatus = async (status: string) => {
+    if (!canEdit) {
+      toast.error("You do not have permission to update refund status.");
+      return;
+    }
     const { updateRefundStatus } = await import("@/actions/order");
     setLoading(true);
     try {
@@ -150,13 +168,13 @@ export default function OrderDetailsPage() {
           <Button variant="outline" onClick={() => toast.success("Invoice downloading...")}>
             <FileText className="mr-2 h-4 w-4" /> Download Invoice
           </Button>
-          {order.orderStatus === "PENDING" && (
+          {canEdit && order.orderStatus === "PENDING" && (
             <Button onClick={() => handleUpdateStatus("CONFIRMED")}>Mark as Confirmed</Button>
           )}
-          {order.orderStatus === "CONFIRMED" && (
+          {canEdit && order.orderStatus === "CONFIRMED" && (
             <Button onClick={() => handleUpdateStatus("SHIPPED")}>Mark as Shipped</Button>
           )}
-          {order.orderStatus === "SHIPPED" && (
+          {canEdit && order.orderStatus === "SHIPPED" && (
             <Button onClick={() => handleUpdateStatus("DELIVERED")}>Mark as Delivered</Button>
           )}
         </div>
@@ -393,7 +411,7 @@ export default function OrderDetailsPage() {
                     {order.refundDetails?.refundStatus || "PENDING"}
                   </Badge>
                 </div>
-                {order.refundDetails?.refundStatus !== "COMPLETED" && (
+                {canEdit && order.refundDetails?.refundStatus !== "COMPLETED" && (
                   <Button 
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold" 
                     onClick={() => handleUpdateRefundStatus("COMPLETED")}
@@ -421,7 +439,7 @@ export default function OrderDetailsPage() {
                   <Badge className="bg-red-100 text-red-700 hover:bg-red-100">{order.returnDetails.status}</Badge>
                   <span className="text-xs text-red-500">{format(new Date(order.returnDetails.requestDate), "MMM dd, yyyy")}</span>
                 </div>
-                {order.returnDetails.status === "PENDING" && (
+                {order.returnDetails.status === "PENDING" && canEdit && (
                   <div className="flex gap-2 pt-2">
                     <Button size="sm" variant="outline" className="flex-1 bg-white" onClick={() => handleUpdateStatus("CONFIRMED")}>Reject</Button>
                     <Button size="sm" className="flex-1 bg-red-600 hover:bg-red-700 text-white" onClick={handleApproveReturn}>Approve Return</Button>

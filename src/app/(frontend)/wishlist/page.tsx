@@ -2,6 +2,7 @@
 
 import React, { useContext } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FiHeart, FiTrash2, FiShoppingBag, FiArrowLeft,
   FiStar, FiEye, FiShare2, FiX, FiLoader
@@ -193,8 +194,8 @@ const WishlistPage = () => {
               key={item._id}
               style={{ animationDelay: `${index * 0.06}s` }}
             >
-              <div className="wl-card-img-wrap">
-                <img src={item.thumbnail} alt={item.name} loading="lazy" className="wl-card-img" />
+              <div className="wl-card-img-wrap" style={{ position: "relative" }}>
+                <Image src={item.thumbnail || "/images/placeholder.png"} alt={item.name} fill className="wl-card-img" style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 300px" />
                 {item.badge && <span className="wl-card-badge">{item.badge}</span>}
                 {item.mrp > item.offerPrice && (
                   <span className="wl-card-discount">-{discount(item.offerPrice, item.mrp)}%</span>

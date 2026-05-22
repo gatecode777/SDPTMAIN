@@ -8,6 +8,7 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import { getCategories } from "@/actions/category";
@@ -43,6 +44,23 @@ const Header = () => {
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { data: session, status } = useSession();
+
+  const handleMouseEnter = () => {
+    if (megaTimeout.current) clearTimeout(megaTimeout.current);
+    setMegaOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    megaTimeout.current = setTimeout(() => {
+      setMegaOpen(false);
+    }, 150);
+  };
+
+  const closeMegaMenu = () => {
+    if (megaTimeout.current) clearTimeout(megaTimeout.current);
+    setMegaOpen(false);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -67,8 +85,19 @@ const Header = () => {
     return () => {
       window.removeEventListener('authChange', handleAuthChange);
       window.removeEventListener('openAuthModal', handleOpenAuth);
+      if (megaTimeout.current) clearTimeout(megaTimeout.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsLoggedIn(true);
+      localStorage.setItem('isLoggedIn', 'true');
+    } else if (status === "unauthenticated") {
+      setIsLoggedIn(false);
+      localStorage.removeItem('isLoggedIn');
+    }
+  }, [status]);
 
   const handleAccountClick = () => {
     if (isLoggedIn) {
@@ -195,11 +224,15 @@ const Header = () => {
 
           <nav className="desktop-nav">
             <Link href="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>Home</Link>
-            <div className="nav-link nav-link--has-mega">
-              <Link href="/shop" className={`nav-link-inner ${isActive("/shop") ? "active" : ""}`}>
-                Products <FiChevronDown size={15} className="nav-arrow" />
+            <div 
+              className="nav-link nav-link--has-mega"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link href="/shop" className={`nav-link-inner ${isActive("/shop") ? "active" : ""}`} onClick={closeMegaMenu}>
+                Products <FiChevronDown size={15} className={`nav-arrow ${megaOpen ? "rotated" : ""}`} />
               </Link>
-              <div className="mega-menu">
+              <div className={`mega-menu ${megaOpen ? "mega-menu--open" : ""}`}>
                 <div className="mega-menu-inner">
                   {groupedCategories.map((group, idx) => (
                     <div className="mega-col" key={idx}>
@@ -209,7 +242,7 @@ const Header = () => {
                           href={`/shop?cat=${cat._id}`}
                           key={cat._id}
                           className="mega-col-link"
-                          onClick={() => setMegaOpen(false)}
+                          onClick={closeMegaMenu}
                         >
                           {cat.name}
                         </Link>
@@ -218,7 +251,7 @@ const Header = () => {
                   ))}
                 </div>
                 <div className="mega-footer">
-                  <Link href="/shop" className="mega-footer-link" onClick={() => setMegaOpen(false)}>
+                  <Link href="/shop" className="mega-footer-link" onClick={closeMegaMenu}>
                     View All Products <FiArrowRight size={14} />
                   </Link>
                 </div>

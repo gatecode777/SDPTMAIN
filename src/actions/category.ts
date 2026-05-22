@@ -4,16 +4,29 @@ import dbConnect from "@/lib/mongoose";
 import Category from "@/models/Category";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "./activity-logs";
+import { auth } from "@/auth";
 
 export async function getCategories() {
   await dbConnect();
-  const categories = await Category.find({}).populate("parent").sort({ createdAt: -1 }).lean();
-  return JSON.parse(JSON.stringify(categories));
+  try {
+    const categories = await Category.find({}).populate("parent").sort({ createdAt: -1 }).lean();
+    return JSON.parse(JSON.stringify(categories));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
 }
 
 export async function createCategory(data: any) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.categories || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.create) {
+      return { success: false, error: "Unauthorized: You do not have permission to create categories." };
+    }
+
     const category = await Category.create(data);
     revalidatePath("/admin/categories");
     revalidatePath("/shop");
@@ -35,6 +48,13 @@ export async function createCategory(data: any) {
 export async function updateCategory(id: string, data: any) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.categories || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, error: "Unauthorized: You do not have permission to edit categories." };
+    }
+
     const category = await Category.findByIdAndUpdate(id, data, { new: true });
     revalidatePath("/admin/categories");
     revalidatePath("/shop");
@@ -56,6 +76,13 @@ export async function updateCategory(id: string, data: any) {
 export async function deleteCategory(id: string) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.categories || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.delete) {
+      return { success: false, error: "Unauthorized: You do not have permission to delete categories." };
+    }
+
     const category = await Category.findById(id).lean() as any;
     await Category.findByIdAndDelete(id);
     revalidatePath("/admin/categories");

@@ -3,6 +3,7 @@
 import React, { useState, useContext, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { FiFilter, FiSearch, FiShoppingCart, FiHeart, FiEye, FiGrid, FiList, FiChevronDown } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
@@ -275,13 +276,13 @@ const ShopContent = () => {
               {products.length > 0 ? (
                 products.map((product) => (
                   <div className="pc" key={product._id}>
-                    <div className="pc-img-wrap">
+                    <div className="pc-img-wrap" onClick={() => { setSelectedProduct(product); setIsModalOpen(true); }} style={{ cursor: 'pointer', position: "relative" }}>
                       {product.discountPercentage !== undefined && product.discountPercentage > 0 && (
                         <span className="pc-badge">-{product.discountPercentage}%</span>
                       )}
-                      <img src={product.thumbnail} alt={product.name} className="pc-img" />
+                      <Image src={product.thumbnail || "/images/placeholder.png"} alt={product.name} fill className="pc-img" style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 300px" />
                       <div className="pc-overlay"></div>
-                      <div className="pc-actions">
+                      <div className="pc-actions" onClick={(e) => e.stopPropagation()}>
                         <button 
                           className="pc-action pc-action--cart" 
                           onClick={() => addToCart({
@@ -314,7 +315,7 @@ const ShopContent = () => {
                         </button>
                       </div>
                     </div>
-                    <div className="pc-body">
+                    <div className="pc-body" onClick={() => { setSelectedProduct(product); setIsModalOpen(true); }} style={{ cursor: 'pointer' }}>
                       <span className="pc-cat">{typeof product.category === 'object' ? product.category.name : "Hardware"}</span>
                       <h3 className="pc-name">{product.name}</h3>
                       <div className="pc-rating">

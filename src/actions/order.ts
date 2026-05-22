@@ -4,30 +4,47 @@ import dbConnect from "@/lib/mongoose";
 import Order from "@/models/Order";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "./activity-logs";
+import { auth } from "@/auth";
 
 export async function getOrders(query = {}, page = 1, limit = 10) {
   await dbConnect();
-  const skip = (page - 1) * limit;
-  
-  const orders = await Order.find(query)
-    .populate("customer")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
+  try {
+    const skip = (page - 1) * limit;
     
-  const total = await Order.countDocuments(query);
-  
-  return {
-    orders: JSON.parse(JSON.stringify(orders)),
-    total,
-    pages: Math.ceil(total / limit),
-  };
+    const orders = await Order.find(query)
+      .populate("customer")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+      
+    const total = await Order.countDocuments(query);
+    
+    return {
+      orders: JSON.parse(JSON.stringify(orders)),
+      total,
+      pages: Math.ceil(total / limit),
+    };
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return {
+      orders: [],
+      total: 0,
+      pages: 0,
+    };
+  }
 }
 
 export async function updateOrderStatus(id: string, status: string, comment?: string, deliveryDate?: string) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.orders || { edit: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, error: "Unauthorized: You do not have permission to update order status." };
+    }
+
     const order = await Order.findById(id);
     if (!order) throw new Error("Order not found");
 
@@ -152,8 +169,23 @@ export async function createOrder(orderData: any) {
 export async function requestReturn(orderId: string, reason: string, orderData?: any) {
   try {
     await dbConnect();
+    const session = await auth();
+    if (!session?.user?.email) return { success: false, message: "Not authenticated" };
+
+    const { default: User } = await import("@/models/User");
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { success: false, message: "User not found" };
+
     const order = await Order.findById(orderId);
     if (!order) return { success: false, message: "Order not found" };
+
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.orders || { edit: false };
+    const hasAdminAccess = isSuperAdmin || permissions.edit;
+
+    if (order.customer.toString() !== user._id.toString() && !hasAdminAccess) {
+      return { success: false, message: "Unauthorized: You do not have permission to return this order." };
+    }
 
     
     if (order.orderStatus !== "DELIVERED") {
@@ -206,8 +238,23 @@ export async function requestReturn(orderId: string, reason: string, orderData?:
 export async function cancelOrder(orderId: string, reason: string, orderData?: any) {
   try {
     await dbConnect();
+    const session = await auth();
+    if (!session?.user?.email) return { success: false, message: "Not authenticated" };
+
+    const { default: User } = await import("@/models/User");
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { success: false, message: "User not found" };
+
     const order = await Order.findById(orderId);
     if (!order) return { success: false, message: "Order not found" };
+
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.orders || { edit: false };
+    const hasAdminAccess = isSuperAdmin || permissions.edit;
+
+    if (order.customer.toString() !== user._id.toString() && !hasAdminAccess) {
+      return { success: false, message: "Unauthorized: You do not have permission to cancel this order." };
+    }
 
     const allowedStatuses = ["PENDING", "CONFIRMED", "PACKED"];
     if (!allowedStatuses.includes(order.orderStatus)) {
@@ -245,6 +292,13 @@ export async function cancelOrder(orderId: string, reason: string, orderData?: a
 export async function approveReturn(orderId: string) {
   try {
     await dbConnect();
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.orders || { edit: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, message: "Unauthorized: You do not have permission to approve returns." };
+    }
+
     const order = await Order.findById(orderId);
     if (!order) return { success: false, message: "Order not found" };
 
@@ -273,6 +327,13 @@ export async function approveReturn(orderId: string) {
 export async function updateRefundStatus(orderId: string, status: string) {
   try {
     await dbConnect();
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.orders || { edit: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, message: "Unauthorized: You do not have permission to update refund status." };
+    }
+
     const order = await Order.findById(orderId);
     if (!order) return { success: false, message: "Order not found" };
 

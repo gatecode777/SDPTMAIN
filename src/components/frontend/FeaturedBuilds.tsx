@@ -8,14 +8,14 @@ const builds = [
     title: "Gaming Beast",
     desc: "RTX 4080 + i7-14700K — Dominate every game at 4K Ultra",
     price: "From ₹1,89,999",
-    img: "/images/pc.png",
+    img: "/images/pc.webp",
     tag: "MOST POPULAR",
   },
   {
     title: "Creator Pro",
     desc: "RTX 4070 Ti + Ryzen 9 — Built for 3D rendering & video editing",
     price: "From ₹1,49,999",
-    img: "/images/pc2.png",
+    img: "/images/pc2.webp",
     tag: "FOR CREATORS",
   },
 ];

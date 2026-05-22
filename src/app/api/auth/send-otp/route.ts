@@ -39,8 +39,8 @@ export async function POST(req: Request) {
           user: process.env.SMTP_USER,
           pass: cleanPass,
         },
-        logger: true,
-        debug: true
+        logger: process.env.NODE_ENV === "development",
+        debug: process.env.NODE_ENV === "development"
       });
 
       await transporter.sendMail({
@@ -64,26 +64,37 @@ export async function POST(req: Request) {
 
       return NextResponse.json({ message: "OTP sent successfully to your email" }, { status: 200 });
     } else {
-      
-      console.log(`[DEV MODE] OTP for ${email}: ${otp}`);
-      return NextResponse.json({ 
-        message: "Development Mode: Use OTP 1234",
-        devOtp: "1234" 
-      }, { status: 200 });
+      if (process.env.NODE_ENV === "development") {
+        const devOtp = "1234";
+        await OTP.findOneAndDelete({ email });
+        await OTP.create({ email, otp: devOtp });
+        console.log(`[DEV MODE] OTP for ${email}: ${devOtp}`);
+        return NextResponse.json({ 
+          message: "Development Mode: Use OTP 1234",
+          devOtp 
+        }, { status: 200 });
+      } else {
+        return NextResponse.json({ message: "SMTP configuration is missing." }, { status: 500 });
+      }
     }
   } catch (error: any) {
     console.error("OTP send error:", error);
     
-    const dummyOtp = "1234";
-    if (emailAddress) {
-      await dbConnect();
-      await OTP.findOneAndUpdate({ email: emailAddress }, { otp: dummyOtp }, { upsert: true });
+    if (process.env.NODE_ENV === "development") {
+      const dummyOtp = "1234";
+      if (emailAddress) {
+        await dbConnect();
+        await OTP.findOneAndUpdate({ email: emailAddress }, { otp: dummyOtp }, { upsert: true });
+      }
+      return NextResponse.json({ 
+        message: "SMTP Failed. Development Mode: Use OTP 1234",
+        devOtp: dummyOtp 
+      }, { status: 200 });
     }
     
     return NextResponse.json({ 
-      message: "SMTP Failed. Development Mode: Use OTP 1234",
-      devOtp: dummyOtp 
-    }, { status: 200 });
+      message: "Failed to send OTP email. Please try again later."
+    }, { status: 500 });
   }
 }
 

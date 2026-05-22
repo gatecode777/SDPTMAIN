@@ -44,8 +44,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getOrders } from "@/actions/order";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSession } from "next-auth/react";
 
 export default function OrdersPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.orders || { view: false, create: false, edit: false, delete: false };
+  const canEdit = isSuperAdmin || permissions.edit;
+
   const router = useRouter();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +80,10 @@ export default function OrdersPage() {
 
   const handleUpdateStatus = async () => {
     if (!selectedOrder) return;
+    if (!canEdit) {
+      toast.error("You do not have permission to update order status.");
+      return;
+    }
     setUpdating(true);
     try {
       const { updateOrderStatus } = await import("@/actions/order");
@@ -242,15 +252,17 @@ export default function OrdersPage() {
                           <DropdownMenuItem onClick={() => router.push(`/admin/orders/${order._id}`)}>
                             <Eye className="mr-2 h-4 w-4" /> View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {
-                            setSelectedOrder(order);
-                            setNewStatus(order.orderStatus);
-                            setDeliveryDate(order.deliveryDate ? format(new Date(order.deliveryDate), "yyyy-MM-dd") : "");
-                            setComment("");
-                            setStatusModalOpen(true);
-                          }}>
-                            <Truck className="mr-2 h-4 w-4" /> Update Status
-                          </DropdownMenuItem>
+                          {canEdit && (
+                            <DropdownMenuItem onClick={() => {
+                              setSelectedOrder(order);
+                              setNewStatus(order.orderStatus);
+                              setDeliveryDate(order.deliveryDate ? format(new Date(order.deliveryDate), "yyyy-MM-dd") : "");
+                              setComment("");
+                              setStatusModalOpen(true);
+                            }}>
+                              <Truck className="mr-2 h-4 w-4" /> Update Status
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem onClick={() => toast.success(`Downloading invoice for order #${order.orderId}...`)}>
                             <Download className="mr-2 h-4 w-4" /> Invoice
                           </DropdownMenuItem>
@@ -265,8 +277,7 @@ export default function OrdersPage() {
         </CardContent>
       </Card>
 
-      {}
-      {statusModalOpen && (
+      {statusModalOpen && canEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-background w-full max-w-md p-6 rounded-xl shadow-2xl border animate-in zoom-in-95 duration-200">
             <h2 className="text-xl font-bold mb-4">Update Order Status</h2>

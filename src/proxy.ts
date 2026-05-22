@@ -5,6 +5,7 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const role = req.auth?.user?.role;
   const email = req.auth?.user?.email;
+  const permissions = (req.auth?.user as any)?.permissions;
   const pathname = req.nextUrl.pathname;
 
   // Protect admin panel routes
@@ -29,10 +30,60 @@ export default auth((req) => {
       return NextResponse.redirect(new URL("/", req.nextUrl));
     }
 
+    // Helper to find first allowed route for this user
+    const getFirstAllowedRoute = () => {
+      if (!permissions) return null;
+      if (permissions.dashboard?.view) return "/admin/dashboard";
+      if (permissions.products?.view) return "/admin/products";
+      if (permissions.categories?.view) return "/admin/categories";
+      if (permissions.orders?.view) return "/admin/orders";
+      if (permissions.users?.view) return "/admin/customers";
+      if (permissions.coupons?.view) return "/admin/coupons";
+      return null;
+    };
+
     // 4. Restrict Admin Manager and Settings pages to SUPER_ADMIN/admin@gmail.com
     if (pathname.startsWith("/admin/admins") || pathname.startsWith("/admin/settings")) {
       if (role !== "SUPER_ADMIN" && email !== "admin@gmail.com") {
-        return NextResponse.redirect(new URL("/admin/dashboard", req.nextUrl));
+        const fallback = getFirstAllowedRoute();
+        return NextResponse.redirect(new URL(fallback || "/admin/login", req.nextUrl));
+      }
+    }
+
+    // 5. Restrict other routes based on granular permissions
+    if (role !== "SUPER_ADMIN" && email !== "admin@gmail.com") {
+      let isAllowed = true;
+
+      if (pathname.startsWith("/admin/dashboard") || pathname.startsWith("/admin/analytics") || pathname.startsWith("/admin/activity-logs")) {
+        isAllowed = !!permissions?.dashboard?.view;
+      } else if (pathname.startsWith("/admin/products/create")) {
+        isAllowed = !!permissions?.products?.create;
+      } else if (pathname.startsWith("/admin/products/edit")) {
+        isAllowed = !!permissions?.products?.edit;
+      } else if (pathname.startsWith("/admin/products") || pathname.startsWith("/admin/banner")) {
+        isAllowed = !!permissions?.products?.view;
+      } else if (pathname.startsWith("/admin/categories")) {
+        isAllowed = !!permissions?.categories?.view;
+      } else if (pathname.startsWith("/admin/orders")) {
+        isAllowed = !!permissions?.orders?.view;
+      } else if (pathname.startsWith("/admin/customers") || pathname.startsWith("/admin/queries")) {
+        isAllowed = !!permissions?.users?.view;
+      } else if (pathname.startsWith("/admin/coupons")) {
+        isAllowed = !!permissions?.coupons?.view;
+      }
+
+      if (!isAllowed) {
+        const fallback = getFirstAllowedRoute();
+        if (fallback && fallback !== pathname) {
+          return NextResponse.redirect(new URL(fallback, req.nextUrl));
+        } else {
+          // If no fallback is available, redirect to login page and clear session cookie
+          const loginRedirect = NextResponse.redirect(new URL("/admin/login", req.nextUrl));
+          loginRedirect.cookies.delete("next-auth.session-token");
+          loginRedirect.cookies.delete("next-auth.callback-url");
+          loginRedirect.cookies.delete("next-auth.csrf-token");
+          return loginRedirect;
+        }
       }
     }
   }

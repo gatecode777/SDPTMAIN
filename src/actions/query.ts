@@ -3,6 +3,7 @@
 import dbConnect from "@/lib/mongoose";
 import Query from "@/models/Query";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export async function submitQuery(formData: { name: string; email: string; phone?: string; subject: string; message: string }) {
   try {
@@ -53,6 +54,13 @@ export async function getQueries(filter = {}, page = 1, limit = 20) {
 export async function updateQueryStatus(id: string, status: string, adminNotes?: string) {
   try {
     await dbConnect();
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.users || { edit: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, error: "Unauthorized: You do not have permission to modify customer queries." };
+    }
+
     const query = await Query.findById(id);
     if (!query) throw new Error("Query not found");
 

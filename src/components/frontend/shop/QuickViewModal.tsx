@@ -3,6 +3,7 @@
 import React, { useContext, useState } from "react";
 import { FiX, FiShoppingCart, FiHeart, FiStar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import "./QuickViewModal.css";
@@ -62,23 +63,30 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
 
             <div className="qv-content">
               <div className="qv-gallery">
-                <div className="qv-main-img-wrap">
-                  <motion.img 
+                <div className="qv-main-img-wrap" style={{ position: "relative" }}>
+                  <motion.div 
                     key={activeImage}
-                    src={allImages[activeImage]} 
-                    alt={product.name} 
                     className="qv-main-img"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                  />
+                    style={{ position: 'relative' }}
+                  >
+                    <Image
+                      src={allImages[activeImage] || "/images/placeholder.png"}
+                      alt={product.name}
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  </motion.div>
                   {allImages.length > 1 && (
                     <>
-                      <button className="qv-nav qv-nav--prev" onClick={prevImage}><FiChevronLeft size={20} /></button>
-                      <button className="qv-nav qv-nav--next" onClick={nextImage}><FiChevronRight size={20} /></button>
+                      <button className="qv-nav qv-nav--prev" onClick={prevImage} style={{ zIndex: 5 }}><FiChevronLeft size={20} /></button>
+                      <button className="qv-nav qv-nav--next" onClick={nextImage} style={{ zIndex: 5 }}><FiChevronRight size={20} /></button>
                     </>
                   )}
-                  {discount > 0 && <span className="qv-discount">-{discount}% OFF</span>}
+                  {discount > 0 && <span className="qv-discount" style={{ zIndex: 5 }}>-{discount}% OFF</span>}
                 </div>
                 <div className="qv-thumbs">
                   {allImages.map((img, i) => (
@@ -86,8 +94,15 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                       key={i} 
                       className={`qv-thumb ${activeImage === i ? "qv-thumb--active" : ""}`}
                       onClick={() => setActiveImage(i)}
+                      style={{ position: 'relative' }}
                     >
-                      <img src={img} alt={`${product.name} thumb ${i}`} />
+                      <Image 
+                        src={img || "/images/placeholder.png"} 
+                        alt={`${product.name} thumb ${i}`} 
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        sizes="80px"
+                      />
                     </div>
                   ))}
                 </div>

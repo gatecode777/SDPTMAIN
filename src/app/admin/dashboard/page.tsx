@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { 
   Users, 
   ShoppingBag, 
-  DollarSign, 
+  IndianRupee, 
   ArrowUpRight, 
   ArrowDownRight,
   Package
@@ -75,6 +75,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboardData();
+    const interval = setInterval(() => {
+      fetchDashboardData();
+    }, 15000); // 15 seconds real-time update
+    return () => clearInterval(interval);
   }, []);
 
   async function fetchDashboardData() {
@@ -187,7 +191,7 @@ export default function DashboardPage() {
           value={loading ? <Skeleton className="h-8 w-24" /> : `₹${stats?.revenue?.toLocaleString("en-IN")}`} 
           change={analytics?.stats?.revenueGrowth || "+0.0%"} 
           trend={(parseFloat(analytics?.stats?.revenueGrowth) || 0) >= 0 ? "up" : "down"}
-          icon={DollarSign}
+          icon={IndianRupee}
         />
         <StatCard 
           title="Orders" 

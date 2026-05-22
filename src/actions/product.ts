@@ -4,12 +4,18 @@ import dbConnect from "@/lib/mongoose";
 import Product from "@/models/Product";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "./activity-logs";
+import { auth } from "@/auth";
 
-export async function getProducts(query = {}, page = 1, limit = 10) {
+export async function getProducts(query = {}, page = 1, limit = 10, select = "-description -images -ratings") {
   await dbConnect();
   const skip = (page - 1) * limit;
   
-  const products = await Product.find(query)
+  let queryBuilder = Product.find(query);
+  if (select) {
+    queryBuilder = queryBuilder.select(select);
+  }
+  
+  const products = await queryBuilder
     .populate("category")
     .sort({ createdAt: -1 })
     .skip(skip)
@@ -28,6 +34,13 @@ export async function getProducts(query = {}, page = 1, limit = 10) {
 export async function createProduct(data: any) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.products || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.create) {
+      return { success: false, error: "Unauthorized: You do not have permission to create products." };
+    }
+
     const product = await Product.create(data);
     revalidatePath("/admin/products");
     revalidatePath("/shop");
@@ -49,6 +62,13 @@ export async function createProduct(data: any) {
 export async function updateProduct(id: string, data: any) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.products || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, error: "Unauthorized: You do not have permission to edit products." };
+    }
+
     const product = await Product.findByIdAndUpdate(id, data, { new: true });
     revalidatePath("/admin/products");
     revalidatePath("/shop");
@@ -71,6 +91,13 @@ export async function updateProduct(id: string, data: any) {
 export async function deleteProduct(id: string) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.products || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.delete) {
+      return { success: false, error: "Unauthorized: You do not have permission to delete products." };
+    }
+
     const product = await Product.findById(id).lean() as any;
     await Product.findByIdAndDelete(id);
     revalidatePath("/admin/products");
@@ -92,13 +119,29 @@ export async function deleteProduct(id: string) {
 
 export async function getProductById(id: string) {
   await dbConnect();
-  const product = await Product.findById(id).populate("category").lean();
-  return JSON.parse(JSON.stringify(product));
+  try {
+    const product = await Product.findById(id).populate("category").lean();
+    return JSON.parse(JSON.stringify(product));
+  } catch (error) {
+    console.error(`Error fetching product by ID (${id}):`, error);
+    return null;
+  }
 }
 
 export async function rateProduct(productId: string, rating: number, review?: string, userId?: string) {
   await dbConnect();
   try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return { success: false, error: "Unauthorized: You must be logged in to rate products." };
+    }
+
+    const { default: User } = await import("@/models/User");
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) {
+      return { success: false, error: "User not found" };
+    }
+
     const product = await Product.findById(productId);
     if (!product) throw new Error("Product not found");
 
@@ -107,7 +150,7 @@ export async function rateProduct(productId: string, rating: number, review?: st
     }
 
     product.ratings.push({
-      userId: userId || "anonymous",
+      userId: session.user.email,
       rating,
       review: review || "",
       createdAt: new Date(),

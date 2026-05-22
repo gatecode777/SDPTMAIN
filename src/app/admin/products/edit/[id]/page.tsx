@@ -36,6 +36,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { getProductById, updateProduct } from "@/actions/product";
 import { uploadImages } from "@/actions/upload";
+import { compressImage } from "@/lib/image";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -167,8 +168,12 @@ export default function EditProductPage() {
     if (!files || files.length === 0) return;
     setUploading(true);
     try {
+      const compressedFiles = await Promise.all(
+        Array.from(files).map((file) => compressImage(file))
+      );
+
       const formData = new FormData();
-      Array.from(files).forEach((file) => {
+      compressedFiles.forEach((file) => {
         formData.append("files", file);
       });
 
@@ -367,7 +372,7 @@ export default function EditProductPage() {
                       <FormLabel>MRP (List Price)</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                           <Input type="number" className="pl-7" {...field} />
                         </div>
                       </FormControl>
@@ -394,7 +399,7 @@ export default function EditProductPage() {
                 <div className="p-4 rounded-lg bg-muted/50 border">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Offer Price:</span>
-                    <span className="font-bold text-emerald-600">${offerPrice.toFixed(2)}</span>
+                    <span className="font-bold text-emerald-600">₹{offerPrice.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>

@@ -26,7 +26,10 @@ const CheckoutFlowContent = () => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/admin/login?callbackUrl=/checkout");
+      router.push("/");
+      setTimeout(() => {
+        window.dispatchEvent(new Event('openAuthModal'));
+      }, 100);
     }
   }, [status, router]);
 

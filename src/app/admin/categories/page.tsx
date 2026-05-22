@@ -47,8 +47,14 @@ import { getCategories, deleteCategory, createCategory, updateCategory } from "@
 import { uploadImages } from "@/actions/upload";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { compressImage } from "@/lib/image";
+import { useSession } from "next-auth/react";
 
 export default function CategoriesPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.categories || { view: false, create: false, edit: false, delete: false };
+
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -92,8 +98,9 @@ export default function CategoriesPage() {
 
     setUploading(true);
     try {
+      const compressedFile = await compressImage(files[0]);
       const formData = new FormData();
-      formData.append("files", files[0]);
+      formData.append("files", compressedFile);
 
       const result = await uploadImages(formData);
       if (result.success && result.urls && result.urls.length > 0) {
@@ -182,14 +189,12 @@ export default function CategoriesPage() {
           <p className="text-muted-foreground">Organize your hardware components into logical groups.</p>
         </div>
         <div className="flex gap-2">
+          {(isSuperAdmin || permissions.create) && (
+            <Button onClick={openCreateDialog}>
+              <Plus className="mr-2 h-4 w-4" /> Add Category
+            </Button>
+          )}
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger 
-              render={
-                <Button onClick={openCreateDialog}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Category
-                </Button>
-              }
-            />
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>{editingCategory ? "Edit Category" : "Add New Category"}</DialogTitle>
@@ -370,23 +375,29 @@ export default function CategoriesPage() {
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-muted transition-colors outline-none">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEditDialog(category)}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            className="text-red-600 focus:text-red-600"
-                            onClick={() => handleDelete(category._id)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {(isSuperAdmin || permissions.edit || permissions.delete) && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-muted transition-colors outline-none">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {(isSuperAdmin || permissions.edit) && (
+                              <DropdownMenuItem onClick={() => openEditDialog(category)}>
+                                <Edit className="mr-2 h-4 w-4" /> Edit
+                              </DropdownMenuItem>
+                            )}
+                            {(isSuperAdmin || permissions.edit) && (isSuperAdmin || permissions.delete) && <DropdownMenuSeparator />}
+                            {(isSuperAdmin || permissions.delete) && (
+                              <DropdownMenuItem 
+                                className="text-red-600 focus:text-red-600"
+                                onClick={() => handleDelete(category._id)}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

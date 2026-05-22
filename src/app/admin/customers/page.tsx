@@ -8,7 +8,7 @@ import {
   Mail,
   Calendar,
   ShoppingBag,
-  DollarSign,
+  IndianRupee,
   User as UserIcon,
   Filter,
   Download
@@ -76,7 +76,7 @@ export default function CustomersPage() {
       let csvContent = "";
       
       // Headers
-      csvContent += "Customer ID,Name,Email,Joined Date,Orders Count,Total Spent ($)\n";
+      csvContent += "Customer ID,Name,Email,Joined Date,Orders Count,Total Spent (₹)\n";
       
       // Rows
       listToExport.forEach((customer: any) => {
@@ -200,7 +200,7 @@ export default function CustomersPage() {
                     </TableCell>
                     <TableCell>
                        <div className="flex items-center gap-1 font-semibold text-emerald-600">
-                        <DollarSign size={14} />
+                        <IndianRupee size={14} />
                         {customer.totalSpend.toFixed(2)}
                       </div>
                     </TableCell>

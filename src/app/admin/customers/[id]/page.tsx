@@ -8,7 +8,7 @@ import {
   Mail, 
   Calendar,
   ShoppingBag,
-  DollarSign,
+  IndianRupee,
   Package
 } from "lucide-react";
 import { format } from "date-fns";
@@ -111,7 +111,7 @@ export default function CustomerDetailsPage() {
                   <span className="font-medium">{customer.orderCount}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground flex items-center gap-2"><DollarSign size={16} /> Total Spent</span>
+                  <span className="text-muted-foreground flex items-center gap-2"><IndianRupee size={16} /> Total Spent</span>
                   <span className="font-medium text-emerald-600 font-semibold">₹{customer.totalSpend.toLocaleString()}</span>
                 </div>
               </div>

@@ -112,7 +112,10 @@ export async function updateAdmin(id: string, data: any) {
     }
     if (data.role) admin.role = data.role;
     if (data.isActive !== undefined) admin.isActive = data.isActive;
-    if (data.permissions) admin.permissions = data.permissions;
+    if (data.permissions) {
+      admin.permissions = data.permissions;
+      admin.markModified("permissions");
+    }
 
     if (data.password && data.password.trim() !== "") {
       admin.password = await bcrypt.hash(data.password, 10);

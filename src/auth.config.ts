@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "p8yv8w8yv8yv8yv8yv8yv8yv8yv8yv8y",
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/admin/login",
   },
@@ -13,6 +13,7 @@ export const authConfig = {
         token.name = user.name;
         token.mobileNumber = user.mobileNumber;
         token.image = user.image;
+        token.permissions = (user as any).permissions;
       }
       if (trigger === "update" && session) {
         if (session.name) {
@@ -36,6 +37,7 @@ export const authConfig = {
         session.user.name = token.name as string;
         session.user.mobileNumber = token.mobileNumber as string;
         session.user.image = token.image as string;
+        session.user.permissions = token.permissions;
       }
       return session;
     },

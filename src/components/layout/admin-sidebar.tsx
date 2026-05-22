@@ -110,12 +110,35 @@ export function AdminSidebar() {
           <nav className="space-y-1">
             {menuItems
               .filter((item) => {
-                if (item.href === "/admin/admins") {
-                  return (
-                    session?.user?.role === "SUPER_ADMIN" ||
-                    session?.user?.email === "admin@gmail.com"
-                  );
+                const isSuper = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+                if (isSuper) return true;
+
+                if (item.href === "/admin/admins" || item.href === "/admin/settings") {
+                  return false;
                 }
+
+                const perms = (session?.user as any)?.permissions;
+                if (!perms) return false;
+
+                if (item.href === "/admin/dashboard" || item.href === "/admin/analytics" || item.href === "/admin/activity-logs") {
+                  return !!perms.dashboard?.view;
+                }
+                if (item.href === "/admin/products" || item.href === "/admin/banner") {
+                  return !!perms.products?.view;
+                }
+                if (item.href === "/admin/categories") {
+                  return !!perms.categories?.view;
+                }
+                if (item.href === "/admin/orders") {
+                  return !!perms.orders?.view;
+                }
+                if (item.href === "/admin/customers" || item.href === "/admin/queries") {
+                  return !!perms.users?.view;
+                }
+                if (item.href === "/admin/coupons") {
+                  return !!perms.coupons?.view;
+                }
+
                 return true;
               })
               .map((item) => {

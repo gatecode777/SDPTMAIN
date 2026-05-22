@@ -4,6 +4,7 @@ import dbConnect from "@/lib/mongoose";
 import Coupon from "@/models/Coupon";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "./activity-logs";
+import { auth } from "@/auth";
 
 export async function getCoupons() {
   await dbConnect();
@@ -18,8 +19,15 @@ export async function getCoupons() {
 export async function createCoupon(data: any) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.coupons || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.create) {
+      return { success: false, error: "Unauthorized: You do not have permission to create coupons." };
+    }
+
     const coupon = await Coupon.create(data);
-    revalidatePath("/coupons");
+    revalidatePath("/admin/coupons");
     await logActivity({
       action: "CREATE",
       module: "coupons",
@@ -36,9 +44,16 @@ export async function createCoupon(data: any) {
 export async function deleteCoupon(id: string) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.coupons || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.delete) {
+      return { success: false, error: "Unauthorized: You do not have permission to delete coupons." };
+    }
+
     const coupon = await Coupon.findById(id).lean() as any;
     await Coupon.findByIdAndDelete(id);
-    revalidatePath("/coupons");
+    revalidatePath("/admin/coupons");
     await logActivity({
       action: "DELETE",
       module: "coupons",
@@ -55,9 +70,16 @@ export async function deleteCoupon(id: string) {
 export async function updateCouponStatus(id: string, isActive: boolean) {
   await dbConnect();
   try {
+    const session = await auth();
+    const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+    const permissions = (session?.user as any)?.permissions?.coupons || { view: false, create: false, edit: false, delete: false };
+    if (!isSuperAdmin && !permissions.edit) {
+      return { success: false, error: "Unauthorized: You do not have permission to edit coupons." };
+    }
+
     const coupon = await Coupon.findById(id).lean() as any;
     await Coupon.findByIdAndUpdate(id, { isActive });
-    revalidatePath("/coupons");
+    revalidatePath("/admin/coupons");
     await logActivity({
       action: "UPDATE",
       module: "coupons",

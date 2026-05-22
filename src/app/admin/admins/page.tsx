@@ -98,6 +98,77 @@ const moduleList = [
 
 type ModuleId = typeof moduleList[number]["id"];
 
+const getPermissionsForRole = (role: string): AdminPermissions => {
+  const perms = JSON.parse(JSON.stringify(defaultPermissions)) as AdminPermissions;
+  
+  if (role === "SUPER_ADMIN") {
+    moduleList.forEach((mod) => {
+      perms[mod.id] = { view: true, create: true, edit: true, delete: true };
+    });
+  } else if (role === "ADMIN") {
+    moduleList.forEach((mod) => {
+      if (mod.id === "users") {
+        perms[mod.id] = { view: true, create: true, edit: true, delete: false };
+      } else {
+        perms[mod.id] = { view: true, create: true, edit: true, delete: true };
+      }
+    });
+  } else if (role === "SUB_ADMIN") {
+    moduleList.forEach((mod) => {
+      if (mod.id === "dashboard" || mod.id === "users") {
+        perms[mod.id] = { view: true, create: false, edit: false, delete: false };
+      } else {
+        perms[mod.id] = { view: true, create: true, edit: true, delete: false };
+      }
+    });
+  } else if (role === "PRODUCT_MANAGER") {
+    moduleList.forEach((mod) => {
+      if (mod.id === "products" || mod.id === "categories" || mod.id === "blogCategories") {
+        perms[mod.id] = { view: true, create: true, edit: true, delete: true };
+      } else if (mod.id === "coupons") {
+        perms[mod.id] = { view: true, create: true, edit: true, delete: false };
+      } else if (mod.id === "dashboard") {
+        perms[mod.id] = { view: true, create: false, edit: false, delete: false };
+      } else {
+        perms[mod.id] = { view: false, create: false, edit: false, delete: false };
+      }
+    });
+  } else if (role === "ORDER_MANAGER") {
+    moduleList.forEach((mod) => {
+      if (mod.id === "orders") {
+        perms[mod.id] = { view: true, create: true, edit: true, delete: true };
+      } else if (mod.id === "coupons" || mod.id === "products") {
+        perms[mod.id] = { view: true, create: mod.id === "coupons", edit: mod.id === "coupons", delete: false };
+      } else if (mod.id === "dashboard") {
+        perms[mod.id] = { view: true, create: false, edit: false, delete: false };
+      } else {
+        perms[mod.id] = { view: false, create: false, edit: false, delete: false };
+      }
+    });
+  }
+  
+  return perms;
+};
+
+const sanitizePermissions = (perms: any): AdminPermissions => {
+  const sanitized = JSON.parse(JSON.stringify(defaultPermissions)) as AdminPermissions;
+  if (!perms) return sanitized;
+  
+  moduleList.forEach((mod) => {
+    const modId = mod.id;
+    if (perms[modId]) {
+      sanitized[modId] = {
+        view: !!perms[modId].view,
+        create: !!perms[modId].create,
+        edit: !!perms[modId].edit,
+        delete: !!perms[modId].delete,
+      };
+    }
+  });
+  
+  return sanitized;
+};
+
 export default function AdminsPage() {
   const { data: session } = useSession();
   const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
@@ -157,7 +228,8 @@ export default function AdminsPage() {
   // Handle permission checkbox changes
   const handlePermissionChange = (module: ModuleId, action: keyof PermissionSet, checked: boolean) => {
     setPermissions((prev) => {
-      const updatedModule = { ...prev[module] };
+      const baseModule = prev[module] || { view: false, create: false, edit: false, delete: false };
+      const updatedModule = { ...baseModule };
       updatedModule[action] = checked;
 
       // Rule: Enabling create/edit/delete auto-enables View
@@ -182,7 +254,7 @@ export default function AdminsPage() {
   // Toggle "All" for a specific row
   const toggleRowAll = (module: ModuleId) => {
     setPermissions((prev) => {
-      const m = prev[module];
+      const m = prev[module] || { view: false, create: false, edit: false, delete: false };
       const allChecked = m.view && m.create && m.edit && m.delete;
       
       return {
@@ -243,7 +315,7 @@ export default function AdminsPage() {
     setPassword("");
     setRole("ADMIN");
     setIsActive(true);
-    setPermissions(JSON.parse(JSON.stringify(defaultPermissions)));
+    setPermissions(getPermissionsForRole("ADMIN"));
     setIsOpen(true);
   };
 
@@ -254,7 +326,7 @@ export default function AdminsPage() {
     setPassword("");
     setRole(admin.role || "ADMIN");
     setIsActive(admin.isActive !== undefined ? admin.isActive : true);
-    setPermissions(admin.permissions || JSON.parse(JSON.stringify(defaultPermissions)));
+    setPermissions(sanitizePermissions(admin.permissions));
     setIsOpen(true);
   };
 
@@ -442,7 +514,11 @@ export default function AdminsPage() {
                 <Label htmlFor="role">Role <span className="text-red-500">*</span></Label>
                 <Select 
                   value={role} 
-                  onValueChange={(val) => setRole(val || "ADMIN")}
+                  onValueChange={(val) => {
+                    const newRole = val || "ADMIN";
+                    setRole(newRole);
+                    setPermissions(getPermissionsForRole(newRole));
+                  }}
                   disabled={editingAdmin?.email === "admin@gmail.com"} // Lock primary super admin role
                 >
                   <SelectTrigger id="role">

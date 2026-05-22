@@ -2,6 +2,7 @@
 
 import React, { useState, useContext, useEffect, use } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiShoppingCart, FiHeart, FiShield, FiTruck, FiRefreshCw, FiChevronRight } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
@@ -88,9 +89,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       <div className="pd-container pd-main-grid">
         <div className="pd-gallery">
-          <div className="pd-main-img">
+          <div className="pd-main-img" style={{ position: "relative" }}>
             {product.badge && <span className="pd-badge">{product.badge}</span>}
-            <img src={product.thumbnail} alt={product.name} />
+            <Image src={product.thumbnail || "/images/placeholder.png"} alt={product.name} fill style={{ objectFit: "contain" }} sizes="(max-width: 768px) 100vw, 500px" priority />
           </div>
         </div>
 

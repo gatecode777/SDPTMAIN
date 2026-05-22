@@ -94,12 +94,11 @@ const PromoBanner = () => {
             </div>
           </div>
         </div>
-        <div className="promo-image" style={{ position: 'relative', minHeight: '400px' }}>
+        <div className="promo-image">
           <Image 
             src={banner.imageUrl || "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80"} 
             alt="Promo Banner" 
             fill
-            style={{ objectFit: 'contain' }}
             className="floating-img" 
             sizes="(max-width: 768px) 100vw, 50vw"
           />

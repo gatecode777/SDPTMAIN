@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag, FiArrowLeft, FiShield, FiTruck, FiTag, FiCheck, FiX } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import Swal from "sweetalert2";
 import { getCoupons } from "@/actions/coupon";
+import { useSession } from "next-auth/react";
 import "./CartPage.css";
 
 const CartPage = () => {
@@ -16,6 +17,20 @@ const CartPage = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<any | null>(null);
   const [showCoupons, setShowCoupons] = useState(false);
   const router = useRouter();
+  const { status } = useSession();
+  const promoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (promoRef.current && !promoRef.current.contains(event.target as Node)) {
+        setShowCoupons(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const getNumPrice = (p: any) => typeof p === 'string' ? parseInt(p.replace(/[^\d]/g, ''), 10) : p;
   const fmt = (n: any) => "₹" + Number(n).toLocaleString("en-IN");
@@ -200,7 +215,7 @@ const CartPage = () => {
               </div>
             )}
             
-            <div className="summary-promo" style={{ position: 'relative' }}>
+            <div ref={promoRef} className="summary-promo" style={{ position: 'relative' }}>
               <div className="promo-input">
                 <FiTag size={16} />
                 <input 
@@ -280,7 +295,7 @@ const CartPage = () => {
 
           <button 
             onClick={() => {
-              const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+              const isLoggedIn = status === "authenticated";
               if (isLoggedIn) {
                 router.push('/checkout');
               } else {

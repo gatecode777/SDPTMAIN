@@ -53,7 +53,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [cart, status, storageKey, isInitialLoad]);
 
   const addToCart = (product: any) => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true' || status === "authenticated";
+    const isLoggedIn = status === "authenticated" || (status === "loading" && localStorage.getItem('isLoggedIn') === 'true');
     
     if (!isLoggedIn) {
       window.dispatchEvent(new Event('openAuthModal'));

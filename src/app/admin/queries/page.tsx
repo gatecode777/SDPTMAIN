@@ -39,6 +39,7 @@ import { getQueries, updateQueryStatus } from "@/actions/query";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 import { 
   Dialog, 
@@ -58,6 +59,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 export default function QueriesPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.users || { view: false, create: false, edit: false, delete: false };
+  const canEdit = isSuperAdmin || permissions.edit;
+
   const [queries, setQueries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,6 +99,10 @@ export default function QueriesPage() {
   };
 
   const handleQuickStatusUpdate = async (id: string, status: string) => {
+    if (!canEdit) {
+      toast.error("You do not have permission to update queries.");
+      return;
+    }
     try {
       const result = await updateQueryStatus(id, status);
       if (result.success) {
@@ -109,6 +119,10 @@ export default function QueriesPage() {
   const handleSaveModal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedQuery) return;
+    if (!canEdit) {
+      toast.error("You do not have permission to update queries.");
+      return;
+    }
     setUpdating(true);
     try {
       const result = await updateQueryStatus(selectedQuery._id, statusInput, adminNotesInput);
@@ -270,17 +284,17 @@ export default function QueriesPage() {
                           <DropdownMenuItem onClick={() => handleOpenModal(query)}>
                             <Eye className="mr-2 h-4 w-4" /> View & Respond
                           </DropdownMenuItem>
-                          {query.status === "PENDING" && (
+                           {canEdit && query.status === "PENDING" && (
                             <DropdownMenuItem onClick={() => handleQuickStatusUpdate(query._id, "IN_PROGRESS")}>
                               <MessageSquare className="mr-2 h-4 w-4 text-blue-600" /> Mark In Progress
                             </DropdownMenuItem>
                           )}
-                          {query.status !== "RESOLVED" && (
+                          {canEdit && query.status !== "RESOLVED" && (
                             <DropdownMenuItem onClick={() => handleQuickStatusUpdate(query._id, "RESOLVED")}>
                               <CheckCircle2 className="mr-2 h-4 w-4 text-emerald-600" /> Mark Resolved
                             </DropdownMenuItem>
                           )}
-                          {query.status !== "CLOSED" && (
+                          {canEdit && query.status !== "CLOSED" && (
                             <DropdownMenuItem onClick={() => handleQuickStatusUpdate(query._id, "CLOSED")}>
                               <XCircle className="mr-2 h-4 w-4 text-gray-600" /> Close Query
                             </DropdownMenuItem>
@@ -349,6 +363,7 @@ export default function QueriesPage() {
                     name="status" 
                     value={statusInput} 
                     onValueChange={(value) => setStatusInput(value ?? statusInput)}
+                    disabled={!canEdit}
                   >
                     <FormSelectTrigger>
                       <FormSelectValue placeholder="Select status" />
@@ -367,20 +382,23 @@ export default function QueriesPage() {
                 <Label htmlFor="adminNotes">Admin Notes / Resolution Details</Label>
                 <Textarea 
                   id="adminNotes" 
-                  placeholder="Add internal notes or record how this query was resolved..." 
+                  placeholder={canEdit ? "Add internal notes or record how this query was resolved..." : "No resolution notes added."}
                   rows={4}
                   value={adminNotesInput}
                   onChange={(e) => setAdminNotesInput(e.target.value)}
+                  disabled={!canEdit}
                 />
               </div>
 
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-                  Cancel
+                <Button type="button" variant={canEdit ? "outline" : "default"} onClick={() => setIsModalOpen(false)}>
+                  {canEdit ? "Cancel" : "Close"}
                 </Button>
-                <Button type="submit" disabled={updating}>
-                  {updating ? "Saving..." : "Save Changes"}
-                </Button>
+                {canEdit && (
+                  <Button type="submit" disabled={updating}>
+                    {updating ? "Saving..." : "Save Changes"}
+                  </Button>
+                )}
               </DialogFooter>
             </form>
           )}

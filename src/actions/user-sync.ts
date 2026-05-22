@@ -40,10 +40,8 @@ export async function getUserData() {
 
     await dbConnect();
 
-    const user = await User.findOne({ email: session.user.email }).select("name cart wishlist addresses mobileNumber image");
+    const user = await User.findOne({ email: session.user.email }).select("name cart wishlist addresses mobileNumber image createdAt");
     if (!user) return { success: false, message: "User not found" };
-
-
 
     return JSON.parse(JSON.stringify({ 
       success: true, 
@@ -52,7 +50,8 @@ export async function getUserData() {
       addresses: user.addresses,
       mobileNumber: user.mobileNumber || "",
       image: user.image || "",
-      name: user.name || ""
+      name: user.name || "",
+      createdAt: user.createdAt
     }));
   } catch (error) {
     console.error("Failed to get user data:", error);

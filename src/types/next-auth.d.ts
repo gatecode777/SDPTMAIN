@@ -6,12 +6,14 @@ declare module "next-auth" {
       id: string
       role: string
       mobileNumber?: string
+      permissions?: any
     } & DefaultSession["user"]
   }
 
   interface User extends DefaultUser {
     role: string
     mobileNumber?: string
+    permissions?: any
   }
 }
 
@@ -20,5 +22,6 @@ declare module "next-auth/jwt" {
     id: string
     role: string
     mobileNumber?: string
+    permissions?: any
   }
 }

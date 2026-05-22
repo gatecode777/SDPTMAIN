@@ -7,7 +7,7 @@ import {
   Tag, 
   Trash2, 
   Calendar, 
-  DollarSign, 
+  IndianRupee, 
   MoreHorizontal,
   CheckCircle2,
   XCircle
@@ -55,8 +55,13 @@ import {
   SelectValue as FormSelectValue 
 } from "@/components/ui/select";
 import { createCoupon } from "@/actions/coupon";
+import { useSession } from "next-auth/react";
 
 export default function CouponsPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.coupons || { view: false, create: false, edit: false, delete: false };
+
   const [coupons, setCoupons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -145,69 +150,71 @@ export default function CouponsPage() {
           <p className="text-muted-foreground">Manage promotional codes and special offers.</p>
         </div>
         
-        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-          <DialogTrigger 
-            render={
-              <Button>
-                <Plus className="mr-2 h-4 w-4" /> Create Coupon
-              </Button>
-            }
-          />
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create New Coupon</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleCreateCoupon} className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="code">Coupon Code</Label>
-                <Input id="code" name="code" placeholder="SAVE20" required className="uppercase" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="discountType">Type</Label>
-                  <FormSelect 
-                    name="discountType" 
-                    value={discountType} 
-                    onValueChange={(val) => setDiscountType(val || "PERCENTAGE")}
-                  >
-                    <FormSelectTrigger>
-                      <FormSelectValue placeholder="Select type">
-                        {discountType === "PERCENTAGE" ? "Percentage (%)" : "Fixed Amount ($)"}
-                      </FormSelectValue>
-                    </FormSelectTrigger>
-                    <FormSelectContent>
-                      <FormSelectItem value="PERCENTAGE">Percentage (%)</FormSelectItem>
-                      <FormSelectItem value="FIXED_AMOUNT">Fixed Amount ($)</FormSelectItem>
-                    </FormSelectContent>
-                  </FormSelect>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="discountValue">Value</Label>
-                  <Input id="discountValue" name="discountValue" type="number" required />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="minPurchaseAmount">Min. Purchase</Label>
-                  <Input id="minPurchaseAmount" name="minPurchaseAmount" type="number" defaultValue="0" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="usageLimit">Usage Limit</Label>
-                  <Input id="usageLimit" name="usageLimit" type="number" defaultValue="100" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="expiryDate">Expiry Date</Label>
-                <Input id="expiryDate" name="expiryDate" type="date" required />
-              </div>
-              <DialogFooter>
-                <Button type="submit" disabled={creating} className="w-full">
-                  {creating ? "Creating..." : "Save Coupon"}
+        {(isSuperAdmin || permissions.create) && (
+          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+            <DialogTrigger 
+              render={
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" /> Create Coupon
                 </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+              }
+            />
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Create New Coupon</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreateCoupon} className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="code">Coupon Code</Label>
+                  <Input id="code" name="code" placeholder="SAVE20" required className="uppercase" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="discountType">Type</Label>
+                    <FormSelect 
+                      name="discountType" 
+                      value={discountType} 
+                      onValueChange={(val) => setDiscountType(val || "PERCENTAGE")}
+                    >
+                      <FormSelectTrigger>
+                        <FormSelectValue placeholder="Select type">
+                          {discountType === "PERCENTAGE" ? "Percentage (%)" : "Fixed Amount (₹)"}
+                        </FormSelectValue>
+                      </FormSelectTrigger>
+                      <FormSelectContent>
+                        <FormSelectItem value="PERCENTAGE">Percentage (%)</FormSelectItem>
+                        <FormSelectItem value="FIXED_AMOUNT">Fixed Amount (₹)</FormSelectItem>
+                      </FormSelectContent>
+                    </FormSelect>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="discountValue">Value</Label>
+                    <Input id="discountValue" name="discountValue" type="number" required />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="minPurchaseAmount">Min. Purchase</Label>
+                    <Input id="minPurchaseAmount" name="minPurchaseAmount" type="number" defaultValue="0" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="usageLimit">Usage Limit</Label>
+                    <Input id="usageLimit" name="usageLimit" type="number" defaultValue="100" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="expiryDate">Expiry Date</Label>
+                  <Input id="expiryDate" name="expiryDate" type="date" required />
+                </div>
+                <DialogFooter>
+                  <Button type="submit" disabled={creating} className="w-full">
+                    {creating ? "Creating..." : "Save Coupon"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -219,7 +226,9 @@ export default function CouponsPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Coupons</p>
-                <h3 className="text-2xl font-bold">{coupons.filter(c => c.isActive).length}</h3>
+                <h3 className="text-2xl font-bold">
+                  {coupons.filter(c => c.isActive && new Date(c.expiryDate) >= new Date()).length}
+                </h3>
               </div>
             </div>
           </CardContent>
@@ -232,7 +241,9 @@ export default function CouponsPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Uses</p>
-                <h3 className="text-2xl font-bold">1,482</h3>
+                <h3 className="text-2xl font-bold">
+                  {coupons.reduce((sum, c) => sum + (c.usedCount || 0), 0).toLocaleString()}
+                </h3>
               </div>
             </div>
           </CardContent>
@@ -241,11 +252,11 @@ export default function CouponsPage() {
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                <DollarSign size={20} />
+                <IndianRupee size={20} />
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Discounted</p>
-                <h3 className="text-2xl font-bold">$12,450</h3>
+                <h3 className="text-2xl font-bold">₹0</h3>
               </div>
             </div>
           </CardContent>
@@ -304,7 +315,7 @@ export default function CouponsPage() {
                       </TableCell>
                       <TableCell className="capitalize text-sm">{coupon.type.toLowerCase()}</TableCell>
                       <TableCell className="font-semibold">
-                        {coupon.type === "PERCENTAGE" ? `${coupon.value}%` : `$${coupon.value}`}
+                        {coupon.type === "PERCENTAGE" ? `${coupon.value}%` : `₹${coupon.value}`}
                       </TableCell>
                       <TableCell className="text-xs">
                         <div className="flex flex-col gap-1">
@@ -325,23 +336,29 @@ export default function CouponsPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-muted transition-colors outline-none">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuGroup>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            </DropdownMenuGroup>
-                            <DropdownMenuItem onClick={() => handleToggleStatus(coupon._id, coupon.isActive)}>
-                              {coupon.isActive ? <XCircle className="mr-2 h-4 w-4" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
-                              {coupon.isActive ? "Deactivate" : "Activate"}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(coupon._id)}>
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        {(isSuperAdmin || permissions.edit || permissions.delete) && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-muted transition-colors outline-none">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuGroup>
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              </DropdownMenuGroup>
+                              {(isSuperAdmin || permissions.edit) && (
+                                <DropdownMenuItem onClick={() => handleToggleStatus(coupon._id, coupon.isActive)}>
+                                  {coupon.isActive ? <XCircle className="mr-2 h-4 w-4" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
+                                  {coupon.isActive ? "Deactivate" : "Activate"}
+                                </DropdownMenuItem>
+                              )}
+                              {(isSuperAdmin || permissions.delete) && (
+                                <DropdownMenuItem className="text-red-600" onClick={() => handleDelete(coupon._id)}>
+                                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

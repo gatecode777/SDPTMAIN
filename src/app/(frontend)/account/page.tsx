@@ -12,6 +12,7 @@ import { useSession, signOut } from "next-auth/react";
 import { getUserData, addUserAddress, deleteUserAddress, updateAddress, updateUserProfile } from "@/actions/user-sync";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
+import { compressImage } from "@/lib/image";
 
 const AccountContent = () => {
   const { cart } = useContext(CartContext);
@@ -25,8 +26,12 @@ const AccountContent = () => {
   const [profileImage, setProfileImage] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [dbProfile, setDbProfile] = useState({ name: "", mobileNumber: "", image: "" });
+  const [createdAt, setCreatedAt] = useState<string | null>(null);
 
   const user = session?.user;
+  const [newName, setNewName] = useState("");
+  const [passwords, setPasswords] = useState({ current: "", new: "" });
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     if (tabParam) {
@@ -50,6 +55,7 @@ const AccountContent = () => {
           setProfileImage(imageToSet);
           setNewName(nameToSet);
           setDbProfile({ name: nameToSet, mobileNumber: mobileToSet, image: imageToSet });
+          setCreatedAt(res.createdAt || null);
         }
         
         // Fetch Orders
@@ -249,12 +255,6 @@ const AccountContent = () => {
 
   const getNumPrice = (p: any) => typeof p === 'string' ? parseInt(p.replace(/[^\d]/g, ''), 10) : p;
   const fmt = (n: any) => "₹" + Number(n).toLocaleString("en-IN");
-  
-  const subtotal = cart.reduce((a: number, i: any) => a + (getNumPrice(i.price) * i.qty), 0);
-  const tax = Math.round(subtotal * 0.18);
-  const shipping = subtotal > 5000 ? 0 : 499;
-  const discount = Math.round(subtotal * 0.05);
-  const total = subtotal + tax + shipping - discount;
 
   const today = new Date().toLocaleDateString('en-GB');
 
@@ -263,9 +263,7 @@ const AccountContent = () => {
     router.push(`/account?tab=${tab}`);
   };
 
-  const [newName, setNewName] = useState("");
-  const [passwords, setPasswords] = useState({ current: "", new: "" });
-  const [isUpdating, setIsUpdating] = useState(false);
+
 
   useEffect(() => {
     if (user?.name && !newName) setNewName(user.name);
@@ -493,14 +491,23 @@ const AccountContent = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedFile = await compressImage(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImage(reader.result as string);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -553,7 +560,9 @@ const AccountContent = () => {
                     )}
                   </div>
                   <div className="profile-header-info">
-                    <span className="user-role-badge">Member Since 2024</span>
+                    <span className="user-role-badge">
+                      Member Since {createdAt ? new Date(createdAt).getFullYear() : 2024}
+                    </span>
                     <h3>{newName || user?.name || "User Account"}</h3>
                     <p className="profile-email-sub">{user?.email}</p>
                   </div>

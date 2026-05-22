@@ -37,17 +37,6 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
   }, [status, storageKey]);
 
   
-  useEffect(() => {
-    if (isInitialLoad) return;
-
-    if (status === "authenticated") {
-      syncUserWishlist([...wishlist]);
-    } else {
-      localStorage.setItem(storageKey, JSON.stringify([...wishlist]));
-    }
-    fetchWishlistItems();
-  }, [wishlist, status, storageKey, isInitialLoad]);
-
   const fetchWishlistItems = async () => {
     if (wishlist.size === 0) {
       setWishlistItems([]);
@@ -64,6 +53,17 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isInitialLoad) return;
+
+    if (status === "authenticated") {
+      syncUserWishlist([...wishlist]);
+    } else {
+      localStorage.setItem(storageKey, JSON.stringify([...wishlist]));
+    }
+    fetchWishlistItems();
+  }, [wishlist, status, storageKey, isInitialLoad]);
 
   const toggleWishlist = (id: string) => {
     const next = new Set(wishlist);

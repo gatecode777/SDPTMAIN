@@ -20,8 +20,14 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { getBanner, updateBanner } from "@/actions/banner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSession } from "next-auth/react";
 
 export default function BannerPage() {
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN" || session?.user?.email === "admin@gmail.com";
+  const permissions = (session?.user as any)?.permissions?.products || { edit: false };
+  const canEdit = isSuperAdmin || permissions.edit;
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [banner, setBanner] = useState<any>({
@@ -57,6 +63,10 @@ export default function BannerPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!canEdit) {
+      toast.error("You do not have permission to modify the banner.");
+      return;
+    }
     setSaving(true);
     try {
       const result = await updateBanner(banner);
@@ -73,6 +83,7 @@ export default function BannerPage() {
   }
 
   const handleChange = (field: string, value: any) => {
+    if (!canEdit) return;
     setBanner((prev: any) => ({ ...prev, [field]: value }));
   };
 
@@ -95,10 +106,12 @@ export default function BannerPage() {
           <h1 className="text-3xl font-bold tracking-tight">Homepage Banner</h1>
           <p className="text-muted-foreground">Manage the promotional banner on your store's homepage.</p>
         </div>
-        <Button onClick={handleSubmit} disabled={saving}>
-          {saving ? "Saving..." : "Save Changes"}
-          <Save className="ml-2 h-4 w-4" />
-        </Button>
+        {canEdit && (
+          <Button onClick={handleSubmit} disabled={saving}>
+            {saving ? "Saving..." : "Save Changes"}
+            <Save className="ml-2 h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -122,6 +135,7 @@ export default function BannerPage() {
                     className="pl-9"
                     value={banner.badge}
                     onChange={(e) => handleChange("badge", e.target.value)}
+                    disabled={!canEdit}
                   />
                 </div>
               </div>
@@ -133,6 +147,7 @@ export default function BannerPage() {
                   placeholder="e.g., Summer Gaming Sale" 
                   value={banner.title}
                   onChange={(e) => handleChange("title", e.target.value)}
+                  disabled={!canEdit}
                 />
               </div>
 
@@ -144,6 +159,7 @@ export default function BannerPage() {
                   className="min-h-[100px]"
                   value={banner.description}
                   onChange={(e) => handleChange("description", e.target.value)}
+                  disabled={!canEdit}
                 />
               </div>
             </CardContent>
@@ -166,6 +182,7 @@ export default function BannerPage() {
                     placeholder="e.g., Shop Now" 
                     value={banner.buttonText}
                     onChange={(e) => handleChange("buttonText", e.target.value)}
+                    disabled={!canEdit}
                   />
                 </div>
                 <div className="space-y-2">
@@ -175,6 +192,7 @@ export default function BannerPage() {
                     placeholder="e.g., /shop" 
                     value={banner.buttonLink}
                     onChange={(e) => handleChange("buttonLink", e.target.value)}
+                    disabled={!canEdit}
                   />
                 </div>
               </div>
@@ -199,6 +217,7 @@ export default function BannerPage() {
                   placeholder="https://..." 
                   value={banner.imageUrl}
                   onChange={(e) => handleChange("imageUrl", e.target.value)}
+                  disabled={!canEdit}
                 />
               </div>
 
@@ -212,6 +231,7 @@ export default function BannerPage() {
                     className="pl-9"
                     value={banner.expiryDate ? new Date(banner.expiryDate).toISOString().slice(0, 16) : ""}
                     onChange={(e) => handleChange("expiryDate", e.target.value)}
+                    disabled={!canEdit}
                   />
                 </div>
               </div>
@@ -224,6 +244,7 @@ export default function BannerPage() {
                 <Switch 
                   checked={banner.isActive}
                   onCheckedChange={(checked) => handleChange("isActive", checked)}
+                  disabled={!canEdit}
                 />
               </div>
             </CardContent>

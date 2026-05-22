@@ -32,6 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           role: user.role,
           image: user.image,
           mobileNumber: user.mobileNumber,
+          permissions: user.permissions ? JSON.parse(JSON.stringify(user.permissions)) : undefined,
         };
       },
     }),
