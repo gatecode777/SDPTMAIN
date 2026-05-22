@@ -31,10 +31,10 @@ export const authConfig = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role;
-        session.user.id = token.id;
+        session.user.role = token.role as string;
+        session.user.id = token.id as string;
         session.user.name = token.name as string;
-        session.user.mobileNumber = token.mobileNumber;
+        session.user.mobileNumber = token.mobileNumber as string;
         session.user.image = token.image as string;
       }
       return session;

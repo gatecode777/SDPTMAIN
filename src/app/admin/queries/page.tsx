@@ -348,7 +348,7 @@ export default function QueriesPage() {
                   <FormSelect 
                     name="status" 
                     value={statusInput} 
-                    onValueChange={setStatusInput}
+                    onValueChange={(value) => setStatusInput(value ?? statusInput)}
                   >
                     <FormSelectTrigger>
                       <FormSelectValue placeholder="Select status" />
