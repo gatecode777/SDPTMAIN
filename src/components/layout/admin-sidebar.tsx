@@ -18,11 +18,13 @@ import {
   ChevronRight,
   LogOut,
   HelpCircle,
+  Shield,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/store/useUIStore";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
@@ -34,15 +36,19 @@ const menuItems = [
   { label: "Coupons", icon: Tag, href: "/admin/coupons" },
   { label: "Queries", icon: HelpCircle, href: "/admin/queries" },
   { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
+  { label: "Activity Logs", icon: ClipboardList, href: "/admin/activity-logs" },
+  { label: "Admin Manager", icon: Shield, href: "/admin/admins" },
   { label: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
 export function AdminSidebar() {
+  const { data: session } = useSession();
   const pathname = usePathname();
   const { isSidebarOpen, toggleSidebar, closeSidebar } = useUIStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    console.log("AdminSidebar debug session:", session, "role:", session?.user?.role);
     setMounted(true);
     
     const handleResize = () => {
@@ -54,7 +60,7 @@ export function AdminSidebar() {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [pathname, closeSidebar]);
+  }, [pathname, closeSidebar, session]);
 
   if (!mounted) return null;
 
@@ -102,7 +108,17 @@ export function AdminSidebar() {
 
         <ScrollArea className="h-[calc(100vh-120px)] px-3 py-4">
           <nav className="space-y-1">
-            {menuItems.map((item) => {
+            {menuItems
+              .filter((item) => {
+                if (item.href === "/admin/admins") {
+                  return (
+                    session?.user?.role === "SUPER_ADMIN" ||
+                    session?.user?.email === "admin@gmail.com"
+                  );
+                }
+                return true;
+              })
+              .map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link

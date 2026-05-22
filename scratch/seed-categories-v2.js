@@ -1,6 +1,16 @@
+const dns = require('dns');
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  console.warn("Could not set DNS servers", e);
+}
+
 const mongoose = require('mongoose');
 
-const MONGODB_URI = "mongodb+srv://balramsuman997_db_user:m0dDKqnvCA4K7TJs@cluster0.l7xeac9.mongodb.net/E-commerce";
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://balramsuman997_db_user:m0dDKqnvCA4K7TJs@cluster0.l7xeac9.mongodb.net/SDPT";
 
 const CategorySchema = new mongoose.Schema(
   {

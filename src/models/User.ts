@@ -9,10 +9,60 @@ const UserSchema = new Schema(
     mobileNumber: { type: String },
     role: {
       type: String,
-      enum: ["SUPER_ADMIN", "PRODUCT_MANAGER", "ORDER_MANAGER", "CUSTOMER"],
+      enum: ["SUPER_ADMIN", "ADMIN", "SUB_ADMIN", "PRODUCT_MANAGER", "ORDER_MANAGER", "CUSTOMER"],
       default: "CUSTOMER",
     },
     isActive: { type: Boolean, default: true },
+    permissions: {
+      dashboard: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      users: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      products: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      categories: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      orders: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      coupons: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      blogs: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+      blogCategories: {
+        view: { type: Boolean, default: false },
+        create: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false },
+      },
+    },
     cart: [{
       id: { type: String, required: true },
       name: { type: String },

@@ -3,6 +3,7 @@
 import dbConnect from "@/lib/mongoose";
 import Order from "@/models/Order";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "./activity-logs";
 
 export async function getOrders(query = {}, page = 1, limit = 10) {
   await dbConnect();
@@ -63,6 +64,13 @@ export async function updateOrderStatus(id: string, status: string, comment?: st
     revalidatePath(`/admin/orders/${id}`);
     revalidatePath("/account");
     revalidatePath("/account?tab=orders");
+    await logActivity({
+      action: "UPDATE",
+      module: "orders",
+      description: `Updated order #${order.orderId || id} status to "${status}"`,
+      targetId: id,
+      targetName: order.orderId || id,
+    });
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "An unknown error occurred";

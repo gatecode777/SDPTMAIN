@@ -9,7 +9,9 @@ import {
   Trash2, 
   Layers,
   Loader2,
-  Save
+  Save,
+  X,
+  Upload
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +44,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCategories, deleteCategory, createCategory, updateCategory } from "@/actions/category";
+import { uploadImages } from "@/actions/upload";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -54,6 +57,8 @@ export default function CategoriesPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [image, setImage] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   const [selectedParent, setSelectedParent] = useState<string>("none");
 
@@ -81,6 +86,30 @@ export default function CategoriesPage() {
     }
   }
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("files", files[0]);
+
+      const result = await uploadImages(formData);
+      if (result.success && result.urls && result.urls.length > 0) {
+        setImage(result.urls[0]);
+        toast.success("Image uploaded successfully");
+      } else {
+        toast.error(result.error || "Failed to upload image");
+      }
+    } catch (error) {
+      toast.error("Something went wrong uploading image");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
   async function handleDelete(id: string) {
     if (confirm("Are you sure? This will delete the category.")) {
       const result = await deleteCategory(id);
@@ -102,6 +131,7 @@ export default function CategoriesPage() {
       slug: formData.get("slug"),
       description: formData.get("description"),
       parent: formData.get("parent") === "none" ? null : formData.get("parent"),
+      image: image || "",
       isVisible: true, 
     };
 
@@ -129,11 +159,13 @@ export default function CategoriesPage() {
 
   const openCreateDialog = () => {
     setEditingCategory(null);
+    setImage("");
     setIsOpen(true);
   };
 
   const openEditDialog = (category: any) => {
     setEditingCategory(category);
+    setImage(category.image || "");
     setIsOpen(true);
   };
 
@@ -215,6 +247,41 @@ export default function CategoriesPage() {
                     placeholder="Optional description..." 
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label>Category Image</Label>
+                  {image ? (
+                    <div className="flex items-center gap-4">
+                      <div className="relative h-16 w-16 rounded border bg-muted overflow-hidden">
+                        <img src={image} alt="Preview" className="h-full w-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setImage("")}
+                          className="absolute top-0.5 right-0.5 h-4 w-4 rounded-full bg-red-500 text-white flex items-center justify-center"
+                        >
+                          <X size={10} />
+                        </button>
+                      </div>
+                      <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        {image}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-dashed border-input hover:bg-accent hover:text-accent-foreground cursor-pointer text-xs font-medium">
+                        <Upload size={14} className="text-muted-foreground" />
+                        <span>Upload Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploading}
+                          onChange={handleImageUpload}
+                        />
+                      </label>
+                      {uploading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                    </div>
+                  )}
+                </div>
                 <DialogFooter>
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
@@ -273,9 +340,15 @@ export default function CategoriesPage() {
                   <TableRow key={category._id} className="hover:bg-muted/30 transition-colors">
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center text-primary">
-                          <Layers size={16} />
-                        </div>
+                        {category.image ? (
+                          <div className="h-8 w-8 rounded border bg-muted overflow-hidden flex-shrink-0">
+                            <img src={category.image} alt={category.name} className="h-full w-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase flex-shrink-0">
+                            {category.name?.slice(0, 2) || "CA"}
+                          </div>
+                        )}
                         {category.name}
                       </div>
                     </TableCell>

@@ -3,6 +3,7 @@
 import dbConnect from "@/lib/mongoose";
 import Product from "@/models/Product";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "./activity-logs";
 
 export async function getProducts(query = {}, page = 1, limit = 10) {
   await dbConnect();
@@ -31,6 +32,13 @@ export async function createProduct(data: any) {
     revalidatePath("/admin/products");
     revalidatePath("/shop");
     revalidatePath("/");
+    await logActivity({
+      action: "CREATE",
+      module: "products",
+      description: `Created product "${data.name}"`,
+      targetId: product._id?.toString(),
+      targetName: data.name,
+    });
     return { success: true, product: JSON.parse(JSON.stringify(product)) };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create product";
@@ -46,6 +54,13 @@ export async function updateProduct(id: string, data: any) {
     revalidatePath("/shop");
     revalidatePath(`/product/${id}`);
     revalidatePath("/");
+    await logActivity({
+      action: "UPDATE",
+      module: "products",
+      description: `Updated product "${data.name || product?.name}"`,
+      targetId: id,
+      targetName: data.name || product?.name,
+    });
     return { success: true, product: JSON.parse(JSON.stringify(product)) };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to update product";
@@ -56,10 +71,18 @@ export async function updateProduct(id: string, data: any) {
 export async function deleteProduct(id: string) {
   await dbConnect();
   try {
+    const product = await Product.findById(id).lean() as any;
     await Product.findByIdAndDelete(id);
     revalidatePath("/admin/products");
     revalidatePath("/shop");
     revalidatePath("/");
+    await logActivity({
+      action: "DELETE",
+      module: "products",
+      description: `Deleted product "${product?.name || id}"`,
+      targetId: id,
+      targetName: product?.name,
+    });
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to delete product";
