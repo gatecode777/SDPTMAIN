@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   serverExternalPackages: ["mongoose"],
   allowedDevOrigins: ["192.168.1.81", "localhost:3000"],
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
