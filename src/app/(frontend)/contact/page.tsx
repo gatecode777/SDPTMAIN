@@ -6,8 +6,8 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import "./ContactPage.css";
 
 const info = [
-  { icon: <FiMail />, label: "Email Us", value: "info@pcstore.com", sub: "We reply within 2 hours" },
-  { icon: <FiPhone />, label: "Call Us", value: "+91 123 456 7890", sub: "Mon–Sat, 10AM – 7PM" },
+  { icon: <FiMail />, label: "Email Us", value: "info@SDPT.com", sub: "We reply within 2 hours" },
+  // { icon: <FiPhone />, label: "Call Us", value: "+91 123 456 7890", sub: "Mon–Sat, 10AM – 7PM" },
   { icon: <FiMapPin />, label: "Visit Us", value: "Capital Galleria, Sirsi Road", sub: "Jaipur, Rajasthan 302034" },
   { icon: <FiClock />, label: "Business Hours", value: "Mon – Sat: 10AM – 7PM", sub: "Sunday: Closed" },
 ];

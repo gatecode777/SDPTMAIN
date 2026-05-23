@@ -4,6 +4,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./Bestseller.css";
+import "./Skeleton.css";
 import { FiShoppingCart, FiHeart, FiEye } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
@@ -94,9 +95,18 @@ const BestSeller = () => {
         </div>
 
         {loading ? (
-          <div className="bs-loading">
-            <div className="bs-spinner"></div>
-            <p>Loading premium components...</p>
+          <div className="bs-skeleton-grid">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div className="bs-skeleton-card" key={i}>
+                <div className="bs-skeleton-img skeleton-block" />
+                <div className="bs-skeleton-body">
+                  <div className="bs-skeleton-name skeleton-block" />
+                  <div className="bs-skeleton-name-short skeleton-block" />
+                  <div className="bs-skeleton-stars skeleton-block" />
+                  <div className="bs-skeleton-price skeleton-block" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : products.length > 0 ? (
           <div className="bs-grid">

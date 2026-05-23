@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FiArrowRight, FiZap } from "react-icons/fi";
 import "./PromoBanner.css";
+import "./Skeleton.css";
 import { getBanner } from "@/actions/banner";
 
 const PromoBanner = () => {
@@ -16,12 +17,15 @@ const PromoBanner = () => {
     seconds: "00"
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function fetchBanner() {
       const data = await getBanner();
       if (data.success && data.banner.isActive) {
         setBanner(data.banner);
       }
+      setLoading(false);
     }
     fetchBanner();
   }, []);
@@ -54,6 +58,29 @@ const PromoBanner = () => {
 
     return () => clearInterval(timer);
   }, [banner]);
+
+  if (loading) {
+    return (
+      <section className="promo-skeleton">
+        <div className="promo-skeleton-container">
+          <div className="promo-skeleton-content">
+            <div className="promo-skeleton-badge" />
+            <div className="promo-skeleton-title" />
+            <div className="promo-skeleton-title" style={{ width: '55%' }} />
+            <div className="promo-skeleton-text" />
+            <div className="promo-skeleton-text" style={{ width: '70%' }} />
+            <div className="promo-skeleton-actions">
+              <div className="promo-skeleton-btn" />
+              <div className="promo-skeleton-timer">
+                {[...Array(4)].map((_, i) => <div className="promo-skeleton-timer-item" key={i} />)}
+              </div>
+            </div>
+          </div>
+          <div className="promo-skeleton-image" />
+        </div>
+      </section>
+    );
+  }
 
   if (!banner) return null;
 

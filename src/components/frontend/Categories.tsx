@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FiChevronLeft, FiChevronRight, FiArrowUpRight } from "react-icons/fi";
 import { getCategories } from "@/actions/category";
 import "./Categories.css";
+import "./Skeleton.css";
 
 interface Category {
   _id: string;
@@ -84,9 +85,11 @@ const Categories = () => {
           <div className="cat-scroll" ref={ref}>
             <div className="cat-track">
               {loading ? (
-                Array.from({ length: 4 }).map((_, i) => (
-                  <div className="cat-card skeleton" key={i} style={{ width: '280px', height: '180px', background: '#f0f0f0', borderRadius: '12px' }}></div>
-                ))
+                <div className="cat-skeleton-track">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div className="cat-skeleton-card skeleton-block" key={i} />
+                  ))}
+                </div>
               ) : categories.length > 0 ? (
                 categories.map((cat) => (
                   <Link href={`/shop?cat=${cat._id}`} className="cat-card" key={cat._id}>

@@ -25,8 +25,9 @@ const Footer = () => {
               <Image src={logo} alt="SDTP Logo" className="ft-logo-img" width={120} height={32} />
             </Link>
             <p className="ft-address"><FiMapPin size={14} /> Capital Galleria, Kanakpura Industrial Area, Sirsi Road, Jaipur, Rajasthan 302034</p>
-            <p className="ft-contact"><FiMail size={14} /> info@gatecode.in</p>
-            <p className="ft-contact"><FiPhone size={14} /> +91 8502888838</p>
+            <p className="ft-contact"><FiMail size={14} /> info@SDPT.com
+            </p>
+            {/* <p className="ft-contact"><FiPhone size={14} /> +91 8502888838</p> */}
             <div className="ft-socials">
               <a href="#" className="ft-social" aria-label="Facebook"><FaFacebookF /></a>
               <a href="#" className="ft-social" aria-label="Instagram"><FaInstagram /></a>

@@ -8,6 +8,7 @@ import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import { getProductById } from "@/actions/product";
 import "./ProductDetail.css";
+import "@/components/frontend/Skeleton.css";
 
 interface Product {
   _id: string;
@@ -60,9 +61,44 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="pd-loading">
-        <div className="pd-spinner"></div>
-        <p>Loading product details...</p>
+      <div className="pd-skeleton-wrap">
+        <div className="pd-skeleton-breadcrumb">
+          <div className="pd-skeleton-breadcrumb-line skeleton-block" />
+        </div>
+        <div className="pd-skeleton-main">
+          <div className="pd-skeleton-gallery skeleton-block" />
+          <div className="pd-skeleton-info">
+            <div className="pd-skeleton-cat skeleton-block" />
+            <div className="pd-skeleton-title skeleton-block" />
+            <div className="pd-skeleton-title skeleton-block" style={{ width: '65%' }} />
+            <div className="pd-skeleton-stars skeleton-block" />
+            <div className="pd-skeleton-price skeleton-block" />
+            <div className="pd-skeleton-desc skeleton-block" />
+            <div className="pd-skeleton-desc skeleton-block" style={{ width: '90%' }} />
+            <div className="pd-skeleton-desc skeleton-block" style={{ width: '75%' }} />
+            <div className="pd-skeleton-actions">
+              <div className="pd-skeleton-qty skeleton-block" />
+              <div className="pd-skeleton-btn skeleton-block" />
+            </div>
+            <div className="pd-skeleton-trust">
+              <div className="pd-skeleton-trust-item skeleton-block" />
+              <div className="pd-skeleton-trust-item skeleton-block" />
+              <div className="pd-skeleton-trust-item skeleton-block" />
+            </div>
+          </div>
+        </div>
+        <div className="pd-skeleton-tabs">
+          <div className="pd-skeleton-tab-header">
+            <div className="pd-skeleton-tab-btn skeleton-block" />
+            <div className="pd-skeleton-tab-btn skeleton-block" />
+            <div className="pd-skeleton-tab-btn skeleton-block" />
+          </div>
+          <div className="pd-skeleton-tab-content">
+            {[100, 90, 95, 80, 70].map((w, i) => (
+              <div key={i} className="pd-skeleton-line skeleton-block" style={{ width: `${w}%` }} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

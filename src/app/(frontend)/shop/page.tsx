@@ -10,6 +10,7 @@ import { WishlistContext } from "@/WishlistContext";
 import { getProducts } from "@/actions/product";
 import { getCategories } from "@/actions/category";
 import "./ShopPage.css";
+import "@/components/frontend/Skeleton.css";
 import QuickViewModal from "@/components/frontend/shop/QuickViewModal";
 import {
   Select,
@@ -267,9 +268,19 @@ const ShopContent = () => {
           </div>
 
           {loading ? (
-            <div className="shop-loading">
-              <div className="shop-spinner"></div>
-              <p>Fetching components...</p>
+            <div className="shop-skeleton-grid">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div className="shop-skeleton-card" key={i}>
+                  <div className="shop-skeleton-card-img skeleton-block" />
+                  <div className="shop-skeleton-card-body">
+                    <div className="shop-skeleton-card-cat skeleton-block" />
+                    <div className="shop-skeleton-card-name skeleton-block" />
+                    <div className="shop-skeleton-card-name-sm skeleton-block" />
+                    <div className="shop-skeleton-card-stars skeleton-block" />
+                    <div className="shop-skeleton-card-price skeleton-block" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className={`product-grid ${viewType}`}>
