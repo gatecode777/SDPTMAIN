@@ -39,6 +39,11 @@ const ProductSchema = new Schema(
   { timestamps: true }
 );
 
+ProductSchema.index({ status: 1, createdAt: -1 });
+ProductSchema.index({ category: 1, status: 1 });
+ProductSchema.index({ offerPrice: 1, status: 1 });
+ProductSchema.index({ isFeatured: 1, status: 1 });
+ProductSchema.index({ isOnOffer: 1, status: 1 });
 
 ProductSchema.pre("validate", function () {
   if (this.mrp && this.discountPercentage !== undefined) {

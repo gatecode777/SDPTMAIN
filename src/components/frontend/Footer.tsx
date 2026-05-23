@@ -24,8 +24,8 @@ const Footer = () => {
             <Link href="/" className="ft-logo" onClick={handleLinkClick}>
               <Image src={logo} alt="SDTP Logo" className="ft-logo-img" width={120} height={32} />
             </Link>
-            <p className="ft-address"><FiMapPin size={14} /> Capital Galleria, Kanakpura Industrial Area, Sirsi Road, Jaipur, Rajasthan 302034</p>
-            <p className="ft-contact"><FiMail size={14} /> info@SDPT.com
+            <p className="ft-address"><FiMapPin size={14} /> 412, Sumer Nagar, Mansarovar, Jaipur, Rajasthan 302020</p>
+            <p className="ft-contact"><FiMail size={14} /> info@sdpt.com
             </p>
             {/* <p className="ft-contact"><FiPhone size={14} /> +91 8502888838</p> */}
             <div className="ft-socials">
@@ -39,12 +39,12 @@ const Footer = () => {
           <div className="ft-col">
             <h4>Shop</h4>
             <ul>
-              <li><Link href="/shop?q=Graphics" onClick={handleLinkClick}>Graphics Cards</Link></li>
-              <li><Link href="/shop?cat=Processor" onClick={handleLinkClick}>Processors</Link></li>
-              <li><Link href="/shop?q=Motherboard" onClick={handleLinkClick}>Motherboards</Link></li>
-              <li><Link href="/shop?cat=Storage" onClick={handleLinkClick}>RAM & Storage</Link></li>
-              <li><Link href="/shop?cat=Peripherals" onClick={handleLinkClick}>Peripherals</Link></li>
-              <li><Link href="/shop?cat=Monitor" onClick={handleLinkClick}>Gaming Monitors</Link></li>
+              <li><Link href="/shop?q=Graphics#shop-catalog">Graphics Cards</Link></li>
+              <li><Link href="/shop?cat=Processor#shop-catalog">Processors</Link></li>
+              <li><Link href="/shop?q=Motherboard#shop-catalog">Motherboards</Link></li>
+              <li><Link href="/shop?cat=Storage#shop-catalog">RAM & Storage</Link></li>
+              <li><Link href="/shop?cat=Peripherals#shop-catalog">Peripherals</Link></li>
+              <li><Link href="/shop?cat=Monitor#shop-catalog">Gaming Monitors</Link></li>
             </ul>
           </div>
 

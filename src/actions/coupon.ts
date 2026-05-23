@@ -9,7 +9,7 @@ import { auth } from "@/auth";
 export async function getCoupons() {
   await dbConnect();
   try {
-    const coupons = await Coupon.find({}).sort({ createdAt: -1 });
+    const coupons = await Coupon.find({}).sort({ createdAt: -1 }).lean();
     return { success: true, coupons: JSON.parse(JSON.stringify(coupons)) };
   } catch (error: any) {
     return { success: false, error: error.message };

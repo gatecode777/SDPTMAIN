@@ -38,7 +38,7 @@ export async function createAdmin(data: any) {
     }
 
     // Check if email already exists
-    const existingUser = await User.findOne({ email: data.email });
+    const existingUser = await User.findOne({ email: data.email }).select("_id").lean();
     if (existingUser) {
       return { success: false, error: "Email is already in use" };
     }
@@ -104,7 +104,7 @@ export async function updateAdmin(id: string, data: any) {
 
     if (data.name) admin.name = data.name;
     if (data.email) {
-      const emailExists = await User.findOne({ email: data.email, _id: { $ne: id } });
+      const emailExists = await User.findOne({ email: data.email, _id: { $ne: id } }).select("_id").lean();
       if (emailExists) {
         return { success: false, error: "Email is already in use by another user" };
       }

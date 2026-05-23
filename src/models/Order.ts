@@ -72,6 +72,9 @@ const OrderSchema = new Schema(
   { timestamps: true }
 );
 
+OrderSchema.index({ customer: 1, createdAt: -1 });
+OrderSchema.index({ orderStatus: 1, createdAt: -1 });
+
 const Order = models.Order || model("Order", OrderSchema);
 
 export default Order;

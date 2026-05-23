@@ -15,6 +15,9 @@ const CouponSchema = new Schema(
   { timestamps: true }
 );
 
+CouponSchema.index({ isActive: 1, expiryDate: 1 });
+CouponSchema.index({ createdAt: -1 });
+
 const Coupon = models.Coupon || model("Coupon", CouponSchema);
 
 export default Coupon;

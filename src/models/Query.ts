@@ -17,6 +17,9 @@ const QuerySchema = new Schema(
   { timestamps: true }
 );
 
+QuerySchema.index({ status: 1, createdAt: -1 });
+QuerySchema.index({ createdAt: -1 });
+
 const Query = models.Query || model("Query", QuerySchema);
 
 export default Query;

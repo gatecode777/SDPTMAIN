@@ -8,6 +8,8 @@ const OTPSchema = new Schema(
   }
 );
 
+OTPSchema.index({ email: 1 });
+
 if (process.env.NODE_ENV === "development") {
   if (mongoose.models && mongoose.models.OTP) {
     delete mongoose.models.OTP;

@@ -40,7 +40,9 @@ export async function getUserData() {
 
     await dbConnect();
 
-    const user = await User.findOne({ email: session.user.email }).select("name cart wishlist addresses mobileNumber image createdAt");
+    const user = await User.findOne({ email: session.user.email })
+      .select("name cart wishlist addresses mobileNumber image createdAt")
+      .lean();
     if (!user) return { success: false, message: "User not found" };
 
     return JSON.parse(JSON.stringify({ 
@@ -67,7 +69,7 @@ export async function addUserAddress(address: any) {
     await dbConnect();
     
     
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findOne({ email: session.user.email }).select("_id addresses").lean();
     if (!user) return { success: false, message: "User profile not found in database." };
 
     const isFirst = !user.addresses || user.addresses.length === 0;
@@ -122,7 +124,7 @@ export async function deleteUserAddress(addressId: string) {
 
     await dbConnect();
     
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findOne({ email: session.user.email }).select("_id").lean();
     if (!user) return { success: false, message: "User not found" };
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -145,7 +147,7 @@ export async function updateAddress(addressId: string, addressData: any) {
 
     await dbConnect();
     
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findOne({ email: session.user.email }).select("_id").lean();
     if (!user) return { success: false, message: "User not found" };
 
     if (addressData.isDefault) {

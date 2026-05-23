@@ -9,17 +9,19 @@ export async function getAnalyticsData() {
   await dbConnect();
 
   try {
-    const orders = await Order.find({ orderStatus: { $ne: "CANCELLED" } })
-      .populate({
-        path: "items.product",
-        populate: {
-          path: "category",
-          model: "Category"
-        }
-      })
-      .lean();
-    const users = await User.find({ role: "CUSTOMER" }).lean();
-    const categories = await Category.find().lean();
+    const [orders, users, categories] = await Promise.all([
+      Order.find({ orderStatus: { $ne: "CANCELLED" } })
+        .populate({
+          path: "items.product",
+          populate: {
+            path: "category",
+            model: "Category"
+          }
+        })
+        .lean(),
+      User.find({ role: "CUSTOMER" }).lean(),
+      Category.find().lean()
+    ]);
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     

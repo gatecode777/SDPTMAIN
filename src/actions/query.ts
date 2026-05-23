@@ -31,13 +31,14 @@ export async function getQueries(filter = {}, page = 1, limit = 20) {
     await dbConnect();
     const skip = (page - 1) * limit;
 
-    const queries = await Query.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-
-    const total = await Query.countDocuments(filter);
+    const [queries, total] = await Promise.all([
+      Query.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Query.countDocuments(filter)
+    ]);
 
     return {
       success: true,

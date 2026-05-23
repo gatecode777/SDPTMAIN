@@ -8,8 +8,8 @@ import "./PromoBanner.css";
 import "./Skeleton.css";
 import { getBanner } from "@/actions/banner";
 
-const PromoBanner = () => {
-  const [banner, setBanner] = useState<any>(null);
+const PromoBanner = ({ initialBanner }: { initialBanner?: any }) => {
+  const [banner, setBanner] = useState<any>(initialBanner || null);
   const [timeLeft, setTimeLeft] = useState({
     days: "00",
     hours: "00",
@@ -17,9 +17,10 @@ const PromoBanner = () => {
     seconds: "00"
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialBanner ? false : true);
 
   useEffect(() => {
+    if (initialBanner) return;
     async function fetchBanner() {
       const data = await getBanner();
       if (data.success && data.banner.isActive) {
@@ -28,7 +29,7 @@ const PromoBanner = () => {
       setLoading(false);
     }
     fetchBanner();
-  }, []);
+  }, [initialBanner]);
 
   useEffect(() => {
     if (!banner || !banner.expiryDate) return;

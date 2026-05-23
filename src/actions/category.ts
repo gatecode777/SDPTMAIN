@@ -5,11 +5,18 @@ import Category from "@/models/Category";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "./activity-logs";
 import { auth } from "@/auth";
+import { customCache, invalidateCacheTag } from "@/lib/cache";
 
 export async function getCategories() {
-  await dbConnect();
   try {
-    const categories = await Category.find({}).populate("parent").sort({ createdAt: -1 }).lean();
+    const categories = await customCache(
+      async () => {
+        await dbConnect();
+        return Category.find({}).populate("parent").sort({ createdAt: -1 }).lean();
+      },
+      "categories-list",
+      ["categories"]
+    );
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -31,6 +38,7 @@ export async function createCategory(data: any) {
     revalidatePath("/admin/categories");
     revalidatePath("/shop");
     revalidatePath("/");
+    await invalidateCacheTag("categories");
     await logActivity({
       action: "CREATE",
       module: "categories",
@@ -59,6 +67,7 @@ export async function updateCategory(id: string, data: any) {
     revalidatePath("/admin/categories");
     revalidatePath("/shop");
     revalidatePath("/");
+    await invalidateCacheTag("categories");
     await logActivity({
       action: "UPDATE",
       module: "categories",
@@ -88,6 +97,7 @@ export async function deleteCategory(id: string) {
     revalidatePath("/admin/categories");
     revalidatePath("/shop");
     revalidatePath("/");
+    await invalidateCacheTag("categories");
     await logActivity({
       action: "DELETE",
       module: "categories",

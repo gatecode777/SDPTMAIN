@@ -25,18 +25,27 @@ interface Product {
 
 const tabs = ["All", "GPUs", "CPUs", "Storage", "Memory", "Cases"];
 
-const BestSeller = () => {
+const BestSeller = ({ initialProducts = [] }: { initialProducts?: Product[] }) => {
   const { addToCart } = useContext(CartContext);
   const { isInWishlist, toggleWishlist } = useContext(WishlistContext);
   const [activeTab, setActiveTab] = useState("All");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(
+    activeTab === "All" && initialProducts.length > 0 ? initialProducts : []
+  );
+  const [loading, setLoading] = useState(
+    activeTab === "All" && initialProducts.length > 0 ? false : true
+  );
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    if (activeTab === "All" && initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setLoading(false);
+      return;
+    }
     fetchProducts();
-  }, [activeTab]);
+  }, [activeTab, initialProducts]);
 
   const fetchProducts = async () => {
     setLoading(true);

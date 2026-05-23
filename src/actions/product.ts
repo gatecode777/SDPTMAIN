@@ -5,30 +5,51 @@ import Product from "@/models/Product";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "./activity-logs";
 import { auth } from "@/auth";
+import { customCache, invalidateCacheTag } from "@/lib/cache";
 
-export async function getProducts(query = {}, page = 1, limit = 10, select = "-description -images -ratings") {
-  await dbConnect();
-  const skip = (page - 1) * limit;
-  
-  let queryBuilder = Product.find(query);
-  if (select) {
-    queryBuilder = queryBuilder.select(select);
+export async function getProducts(
+  query = {},
+  page = 1,
+  limit = 10,
+  select = "name slug price mrp discountPercentage offerPrice thumbnail averageRating totalReviews category status createdAt"
+) {
+  const queryStr = JSON.stringify(query);
+  const cacheKey = `products-list-${queryStr}-${page}-${limit}-${select}`;
+
+  try {
+    return await customCache(
+      async () => {
+        await dbConnect();
+        const skip = (page - 1) * limit;
+        
+        let queryBuilder = Product.find(query);
+        if (select) {
+          queryBuilder = queryBuilder.select(select);
+        }
+        
+        const [products, total] = await Promise.all([
+          queryBuilder
+            .populate("category")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+          Product.countDocuments(query)
+        ]);
+        
+        return {
+          products: JSON.parse(JSON.stringify(products)),
+          total,
+          pages: Math.ceil(total / limit),
+        };
+      },
+      cacheKey,
+      ["products"]
+    );
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return { products: [], total: 0, pages: 0 };
   }
-  
-  const products = await queryBuilder
-    .populate("category")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
-    
-  const total = await Product.countDocuments(query);
-  
-  return {
-    products: JSON.parse(JSON.stringify(products)),
-    total,
-    pages: Math.ceil(total / limit),
-  };
 }
 
 export async function createProduct(data: any) {
@@ -45,6 +66,7 @@ export async function createProduct(data: any) {
     revalidatePath("/admin/products");
     revalidatePath("/shop");
     revalidatePath("/");
+    await invalidateCacheTag("products");
     await logActivity({
       action: "CREATE",
       module: "products",
@@ -74,6 +96,10 @@ export async function updateProduct(id: string, data: any) {
     revalidatePath("/shop");
     revalidatePath(`/product/${id}`);
     revalidatePath("/");
+    await Promise.all([
+      invalidateCacheTag("products"),
+      invalidateCacheTag(`product-${id}`)
+    ]);
     await logActivity({
       action: "UPDATE",
       module: "products",
@@ -103,6 +129,10 @@ export async function deleteProduct(id: string) {
     revalidatePath("/admin/products");
     revalidatePath("/shop");
     revalidatePath("/");
+    await Promise.all([
+      invalidateCacheTag("products"),
+      invalidateCacheTag(`product-${id}`)
+    ]);
     await logActivity({
       action: "DELETE",
       module: "products",
@@ -118,10 +148,16 @@ export async function deleteProduct(id: string) {
 }
 
 export async function getProductById(id: string) {
-  await dbConnect();
   try {
-    const product = await Product.findById(id).populate("category").lean();
-    return JSON.parse(JSON.stringify(product));
+    return await customCache(
+      async () => {
+        await dbConnect();
+        const product = await Product.findById(id).populate("category").lean();
+        return JSON.parse(JSON.stringify(product));
+      },
+      `product-detail-${id}`,
+      ["products", `product-${id}`]
+    );
   } catch (error) {
     console.error(`Error fetching product by ID (${id}):`, error);
     return null;
@@ -166,6 +202,10 @@ export async function rateProduct(productId: string, rating: number, review?: st
     revalidatePath(`/product/${productId}`);
     revalidatePath("/account");
     revalidatePath("/account?tab=orders");
+    await Promise.all([
+      invalidateCacheTag("products"),
+      invalidateCacheTag(`product-${productId}`)
+    ]);
     return { success: true, product: JSON.parse(JSON.stringify(product)) };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to rate product";

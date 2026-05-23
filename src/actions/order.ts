@@ -11,14 +11,15 @@ export async function getOrders(query = {}, page = 1, limit = 10) {
   try {
     const skip = (page - 1) * limit;
     
-    const orders = await Order.find(query)
-      .populate("customer")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-      
-    const total = await Order.countDocuments(query);
+    const [orders, total] = await Promise.all([
+      Order.find(query)
+        .populate("customer")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Order.countDocuments(query)
+    ]);
     
     return {
       orders: JSON.parse(JSON.stringify(orders)),

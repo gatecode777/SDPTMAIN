@@ -14,12 +14,13 @@ interface Category {
   image?: string;
 }
 
-const Categories = () => {
+const Categories = ({ initialCategories = [] }: { initialCategories?: Category[] }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [loading, setLoading] = useState(initialCategories.length === 0);
 
   useEffect(() => {
+    if (initialCategories.length > 0) return;
     const fetchCats = async () => {
       try {
         const data = await getCategories();
@@ -32,7 +33,7 @@ const Categories = () => {
       }
     };
     fetchCats();
-  }, []);
+  }, [initialCategories]);
 
   const scroll = (dir: "left" | "right") => {
     const el = ref.current;
@@ -92,7 +93,7 @@ const Categories = () => {
                 </div>
               ) : categories.length > 0 ? (
                 categories.map((cat) => (
-                  <Link href={`/shop?cat=${cat._id}`} className="cat-card" key={cat._id}>
+                  <Link href={`/shop?cat=${cat._id}#shop-catalog`} className="cat-card" key={cat._id}>
                     <div className="cat-card-img" style={{ position: "relative" }}>
                       <Image 
                         src={cat.image || defaultImages[cat.name] || "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=600&q=80"} 

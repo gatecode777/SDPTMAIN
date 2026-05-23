@@ -12,6 +12,9 @@ const CategorySchema = new Schema(
   { timestamps: true }
 );
 
+CategorySchema.index({ isVisible: 1, createdAt: -1 });
+CategorySchema.index({ createdAt: -1 });
+
 const Category = models.Category || model("Category", CategorySchema);
 
 export default Category;
