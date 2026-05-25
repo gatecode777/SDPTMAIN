@@ -11,6 +11,7 @@ interface Product {
   mrp: number;
   thumbnail: string;
   shortDescription?: string;
+  description?: string;
   badge?: string;
   averageRating?: number;
   totalReviews?: number;
@@ -30,7 +31,10 @@ interface ProductCardProps {
 // Helper to extract clean technical specs from the product
 const getProductSpecs = (product: Product): string[] => {
   const name = product.name || "";
-  const desc = product.shortDescription || "";
+  let desc = product.shortDescription || "";
+  if (!desc && product.description) {
+    desc = product.description.replace(/<[^>]*>?/gm, '');
+  }
   const specs: string[] = [];
 
   const patterns = [

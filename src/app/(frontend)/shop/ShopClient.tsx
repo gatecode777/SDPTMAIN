@@ -9,8 +9,10 @@ import { WishlistContext } from "@/WishlistContext";
 import { getProducts } from "@/actions/product";
 import "./ShopPage.css";
 import "@/components/frontend/Skeleton.css";
-import QuickViewModal from "@/components/frontend/shop/QuickViewModal";
+import dynamic from "next/dynamic";
 import ProductCard from "@/components/frontend/shop/ProductCard";
+
+const QuickViewModal = dynamic(() => import("@/components/frontend/shop/QuickViewModal"), { ssr: false });
 import {
   Select,
   SelectContent,

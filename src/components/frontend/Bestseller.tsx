@@ -7,8 +7,10 @@ import "./Skeleton.css";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import { getProducts } from "@/actions/product";
-import QuickViewModal from "./shop/QuickViewModal";
+import dynamic from "next/dynamic";
 import ProductCard from "./shop/ProductCard";
+
+const QuickViewModal = dynamic(() => import("./shop/QuickViewModal"), { ssr: false });
 
 interface Product {
   _id: string;

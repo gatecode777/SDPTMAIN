@@ -150,8 +150,8 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
 
                 <div className="qv-desc-wrap">
                   <h4 className="qv-section-title">Description</h4>
-                  <p className="qv-short-desc">{product.shortDescription || "High-performance component designed for enthusiasts."}</p>
-                  <div className="qv-full-desc" dangerouslySetInnerHTML={{ __html: product.description }} />
+                  {product.shortDescription && <p className="qv-short-desc">{product.shortDescription}</p>}
+                  {product.description && <div className="qv-full-desc" dangerouslySetInnerHTML={{ __html: product.description }} />}
                 </div>
 
                 <div className="qv-actions">
