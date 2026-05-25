@@ -70,7 +70,10 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {product.mrp > product.offerPrice && <span className="pd-old-price">{fmt(product.mrp)}</span>}
           </div>
 
-          <p className="pd-short-desc">{product.shortDescription || product.description?.substring(0, 160) + "..."}</p>
+          <p className="pd-short-desc">
+            {product.shortDescription || 
+              (product.description ? product.description.replace(/<[^>]*>?/gm, '').substring(0, 160) + "..." : "No description available.")}
+          </p>
 
           <div className="pd-actions">
             <div className="pd-qty">

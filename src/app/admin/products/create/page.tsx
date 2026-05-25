@@ -39,6 +39,7 @@ import { Switch } from "@/components/ui/switch";
 import { createProduct } from "@/actions/product";
 import { uploadImages } from "@/actions/upload";
 import { compressImage } from "@/lib/image";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -250,10 +251,10 @@ export default function CreateProductPage() {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea
+                        <RichTextEditor
                           placeholder="Detailed description of the product..."
-                          className="min-h-[150px]"
-                          {...field}
+                          value={field.value}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />

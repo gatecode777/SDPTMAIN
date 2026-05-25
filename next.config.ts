@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["react-icons", "lucide-react", "recharts"],
   },
   images: {
+    qualities: [25, 50, 70, 75, 90, 100],
     remotePatterns: [
       { protocol: "https", hostname: "**" },
       { protocol: "http", hostname: "**" }
