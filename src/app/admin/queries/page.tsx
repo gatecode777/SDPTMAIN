@@ -140,12 +140,15 @@ export default function QueriesPage() {
     }
   };
 
-  const filteredQueries = queries.filter(q => 
-    q.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    q.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    q.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    q.message.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredQueries = queries.filter(q => {
+    const term = searchTerm.toLowerCase();
+    return (
+      (q.name && q.name.toLowerCase().includes(term)) ||
+      (q.email && q.email.toLowerCase().includes(term)) ||
+      (q.subject && q.subject.toLowerCase().includes(term)) ||
+      (q.message && q.message.toLowerCase().includes(term))
+    );
+  });
 
   const pendingCount = queries.filter(q => q.status === "PENDING").length;
   const inProgressCount = queries.filter(q => q.status === "IN_PROGRESS").length;

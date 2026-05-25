@@ -266,7 +266,12 @@ export default function CouponsPage() {
       <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search by code..." className="pl-9" />
+          <Input 
+            placeholder="Search by code..." 
+            className="pl-9" 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
       </div>
 
@@ -297,14 +302,14 @@ export default function CouponsPage() {
                     <TableCell><Skeleton className="h-8 w-8 ml-auto rounded" /></TableCell>
                   </TableRow>
                 ))
-              ) : coupons.length === 0 ? (
+              ) : coupons.filter(c => c.code.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
-                    No coupons found. Create your first promotional code.
+                    No coupons found matching your search.
                   </TableCell>
                 </TableRow>
               ) : (
-                coupons.map((coupon) => {
+                coupons.filter(c => c.code.toLowerCase().includes(searchTerm.toLowerCase())).map((coupon) => {
                   const isExpired = new Date(coupon.expiryDate) < new Date();
                   return (
                     <TableRow key={coupon._id} className="hover:bg-muted/30 transition-colors">

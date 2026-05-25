@@ -49,16 +49,38 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    const delayDebounceFn = setTimeout(() => {
+      fetchProducts(1, searchTerm, statusFilter);
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, statusFilter]);
 
-  async function fetchProducts() {
+  useEffect(() => {
+    fetchProducts(page, searchTerm, statusFilter);
+  }, [page]);
+
+  async function fetchProducts(currentPage = page, search = searchTerm, status = statusFilter) {
     setLoading(true);
     try {
-      const data = await getProducts();
+      const query: any = {};
+      if (search) {
+        query.$or = [
+          { name: { $regex: search, $options: "i" } },
+          { sku: { $regex: search, $options: "i" } }
+        ];
+      }
+      if (status !== "ALL") {
+        query.status = status;
+      }
+      const data = await getProducts(query, currentPage, 10);
       setProducts(data.products);
+      setTotalPages(data.pages || 1);
+      setPage(currentPage);
     } catch (error) {
       toast.error("Failed to load products");
     } finally {
@@ -71,19 +93,12 @@ export default function ProductsPage() {
       const result = await deleteProduct(id);
       if (result.success) {
         toast.success("Product deleted successfully");
-        fetchProducts();
+        fetchProducts(page, searchTerm, statusFilter);
       } else {
         toast.error(result.error);
       }
     }
   }
-
-
-
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="space-y-6">
@@ -113,9 +128,26 @@ export default function ProductsPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button variant="outline" size="icon">
-          <Filter className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setStatusFilter("ALL")} className={statusFilter === "ALL" ? "bg-muted" : ""}>
+              All Status
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setStatusFilter("PUBLISHED")} className={statusFilter === "PUBLISHED" ? "bg-muted" : ""}>
+              Published
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setStatusFilter("DRAFT")} className={statusFilter === "DRAFT" ? "bg-muted" : ""}>
+              Draft
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <Card className="border-none shadow-sm overflow-hidden bg-card/50 backdrop-blur">
@@ -147,14 +179,14 @@ export default function ProductsPage() {
                     <TableCell><Skeleton className="h-8 w-8 ml-auto rounded" /></TableCell>
                   </TableRow>
                 ))
-              ) : filteredProducts.length === 0 ? (
+              ) : products.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
                     No products found.
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredProducts.map((product) => (
+                products.map((product) => (
                   <TableRow key={product._id} className="hover:bg-muted/30 transition-colors">
                     <TableCell>
                       <div className="h-10 w-10 rounded bg-muted flex items-center justify-center overflow-hidden border">
@@ -203,7 +235,7 @@ export default function ProductsPage() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           </DropdownMenuGroup>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => window.location.href = `/admin/products/edit/${product._id}`}>
+                          <DropdownMenuItem onClick={() => window.location.href = `/product/${product._id}`}>
                             <Eye className="mr-2 h-4 w-4" /> View Details
                           </DropdownMenuItem>
                           {(isSuperAdmin || permissions.edit) && (
@@ -232,6 +264,32 @@ export default function ProductsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {!loading && totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === totalPages}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
