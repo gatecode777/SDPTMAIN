@@ -33,6 +33,8 @@ export async function POST(req: Request) {
       
       const cleanPass = process.env.SMTP_PASS.replace(/['"]+/g, '');
       
+      console.log("[DEBUG] Vercel is currently using SMTP_HOST:", process.env.SMTP_HOST);
+      
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || "sandbox.smtp.mailtrap.io",
         port: parseInt(process.env.SMTP_PORT || "2525"),
