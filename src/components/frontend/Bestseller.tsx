@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./Bestseller.css";
@@ -9,7 +9,9 @@ import { FiShoppingCart, FiHeart, FiEye } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import { getProducts } from "@/actions/product";
-import QuickViewModal from "./shop/QuickViewModal";
+import dynamic from "next/dynamic";
+
+const QuickViewModal = dynamic(() => import("./shop/QuickViewModal"), { ssr: false });
 
 interface Product {
   _id: string;
@@ -38,14 +40,21 @@ const BestSeller = ({ initialProducts = [] }: { initialProducts?: Product[] }) =
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const initialRender = useRef(true);
+
   useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false;
+      if (activeTab === "All" && initialProducts.length > 0) return;
+    }
+
     if (activeTab === "All" && initialProducts.length > 0) {
       setProducts(initialProducts);
       setLoading(false);
       return;
     }
     fetchProducts();
-  }, [activeTab, initialProducts]);
+  }, [activeTab]); // Intentionally omitting initialProducts to prevent unnecessary loops
 
   const fetchProducts = async () => {
     setLoading(true);
