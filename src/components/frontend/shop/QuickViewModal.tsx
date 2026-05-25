@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { FiX, FiShoppingCart, FiHeart, FiStar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -35,6 +35,25 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
   const { addToCart } = useContext(CartContext);
   const { toggleWishlist, isInWishlist } = useContext(WishlistContext);
   const [activeImage, setActiveImage] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      setActiveImage(0);
+      const timer = setTimeout(() => {
+        if (contentRef.current) {
+          contentRef.current.scrollTop = 0;
+        }
+      }, 50);
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = "";
+      };
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isOpen]);
 
   if (!product) return null;
 
@@ -57,11 +76,11 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
           >
-            <button className="qv-close" onClick={onClose} aria-label="Close modal">
+            <button className="qv-close" onClick={onClose} aria-label="Close modal" autoFocus>
               <FiX size={24} />
             </button>
 
-            <div className="qv-content">
+            <div className="qv-content" ref={contentRef}>
               <div className="qv-gallery">
                 <div className="qv-main-img-wrap" style={{ position: "relative" }}>
                   <motion.div 
@@ -70,7 +89,7 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    style={{ position: 'relative' }}
+                    style={{ position: 'absolute', inset: 0 }}
                   >
                     <Image
                       src={allImages[activeImage] || "/images/placeholder.png"}

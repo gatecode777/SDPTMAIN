@@ -193,11 +193,6 @@
 
 /* Global Overrides for Shop Responsiveness */
 @media (max-width: 1024px) {
-  .product-grid.grid {
-    grid-template-columns: 1fr;
-    gap: 25px !important;
-  }
-
   .shop-sidebar {
     background: #ffffff !important;
     backdrop-filter: none !important;
@@ -217,7 +212,8 @@
   padding: 1.25rem !important;
   border-radius: 20px !important;
   font-family: 'Poppins', sans-serif !important;
-  width: 280px !important; /* Even smaller width */
+  width: 380px;
+  max-width: 95vw;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12) !important;
   border: none !important;
 }

@@ -3,14 +3,14 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import { FiFilter, FiSearch, FiShoppingCart, FiHeart, FiEye, FiGrid, FiList, FiChevronDown } from "react-icons/fi";
+import { FiFilter, FiSearch, FiGrid, FiList } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import { WishlistContext } from "@/WishlistContext";
 import { getProducts } from "@/actions/product";
 import "./ShopPage.css";
 import "@/components/frontend/Skeleton.css";
 import QuickViewModal from "@/components/frontend/shop/QuickViewModal";
+import ProductCard from "@/components/frontend/shop/ProductCard";
 import {
   Select,
   SelectContent,
@@ -283,66 +283,16 @@ export default function ShopClient({
             <div className={`product-grid ${viewType}`}>
               {products.length > 0 ? (
                 products.map((product) => (
-                  <div className="pc" key={product._id}>
-                    <div className="pc-img-wrap" onClick={() => { setSelectedProduct(product); setIsModalOpen(true); }} style={{ cursor: 'pointer', position: "relative" }}>
-                      {product.discountPercentage !== undefined && product.discountPercentage > 0 && (
-                        <span className="pc-badge">-{product.discountPercentage}%</span>
-                      )}
-                      <Image src={product.thumbnail || "/images/placeholder.png"} alt={product.name} fill className="pc-img" style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 300px" />
-                      <div className="pc-overlay"></div>
-                      <div className="pc-actions" onClick={(e) => e.stopPropagation()}>
-                        <button 
-                          className="pc-action pc-action--cart" 
-                          onClick={() => addToCart({
-                            id: product._id,
-                            name: product.name,
-                            price: product.offerPrice,
-                            img: product.thumbnail,
-                            qty: 1
-                          })} 
-                          title="Add to Cart"
-                        >
-                          <FiShoppingCart size={16} />
-                        </button>
-                        <button 
-                          className={`pc-action ${isInWishlist(product._id) ? "pc-action--liked" : ""}`} 
-                          onClick={() => toggleWishlist(product._id)} 
-                          title="Wishlist"
-                        >
-                          <FiHeart size={16} />
-                        </button>
-                        <button 
-                          className="pc-action" 
-                          onClick={() => {
-                            setSelectedProduct(product);
-                            setIsModalOpen(true);
-                          }}
-                          title="Quick view"
-                        >
-                          <FiEye size={16} />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="pc-body" onClick={() => { setSelectedProduct(product); setIsModalOpen(true); }} style={{ cursor: 'pointer' }}>
-                      <span className="pc-cat">{typeof product.category === 'object' ? product.category.name : "Hardware"}</span>
-                      <h3 className="pc-name">{product.name}</h3>
-                      <div className="pc-rating">
-                        <div className="pc-stars">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className={`bs-star ${i < Math.floor(product.averageRating || 5) ? "bs-star--filled" : ""}`}>★</span>
-                          ))}
-                        </div>
-                        <span className="pc-reviews">({product.totalReviews || 0})</span>
-                      </div>
-                      <div className="pc-price-row">
-                        <span className="pc-price">{fmt(product.offerPrice)}</span>
-                        {product.mrp > product.offerPrice && (
-                          <span className="pc-original">{fmt(product.mrp)}</span>
-                        )}
-                      </div>
-                      {product.shortDescription && <p className="pc-desc">{product.shortDescription}</p>}
-                    </div>
-                  </div>
+                  <ProductCard
+                    key={product._id}
+                    product={product as any}
+                    isInWishlist={isInWishlist}
+                    toggleWishlist={toggleWishlist}
+                    addToCart={addToCart}
+                    setSelectedProduct={setSelectedProduct}
+                    setIsModalOpen={setIsModalOpen}
+                    viewType={viewType}
+                  />
                 ))
               ) : (
                 <div className="no-results">

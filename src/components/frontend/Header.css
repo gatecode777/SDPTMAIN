@@ -1013,7 +1013,6 @@
     border: 5px solid #fff;
     position: absolute;
     top: -32px;
-    /* exactly half of 64px to make it half inside, half outside */
     left: 50%;
     transform: translateX(-50%);
     transition: all 0.2s ease;
@@ -1021,7 +1020,7 @@
 
   .m-item--build span {
     padding-top: 36px;
-    /* push text down below the absolutely positioned icon */
+
   }
 
   .m-item--build.active .m-build-icon {
