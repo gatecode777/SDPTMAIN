@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import "./HelpForm.css";
 
 export default function HelpForm() {
@@ -21,8 +22,14 @@ export default function HelpForm() {
 
   return (
     <div className="page-wrapper">
-      <div className="form-container-img">
-        <img src="/Image/needhelp_img.jpg" alt="" />
+      <div className="form-container-img" style={{ position: "relative", minHeight: "300px" }}>
+        <Image 
+          src="/Image/needhelp_img.jpg" 
+          alt="Need Help"
+          fill
+          style={{ objectFit: "cover", borderRadius: "12px" }}
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
       </div>
       <div className="form-container-blog">
         <h1 className="card-title">Need Help?</h1>

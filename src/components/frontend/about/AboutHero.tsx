@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FiArrowRight } from "react-icons/fi";
 
 const AboutHero = () => (
@@ -13,8 +14,13 @@ const AboutHero = () => (
         <Link href="/contact" className="abtn abtn--outline">Contact Us</Link>
       </div>
     </div>
-    <div className="about-hero-img">
-      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=700&q=80" alt="PC Components" />
+    <div className="about-hero-img" style={{ position: "relative", minHeight: "300px" }}>
+      <Image 
+        src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=700&q=80" 
+        alt="PC Components" 
+        fill
+        style={{ objectFit: "cover", borderRadius: "12px" }}
+      />
     </div>
   </section>
 );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import "./Bestseller.css";
 import "./Skeleton.css";
@@ -37,14 +37,21 @@ const BestSeller = ({ initialProducts = [] }: { initialProducts?: Product[] }) =
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const initialRender = useRef(true);
+
   useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false;
+      if (activeTab === "All" && initialProducts.length > 0) return;
+    }
+
     if (activeTab === "All" && initialProducts.length > 0) {
       setProducts(initialProducts);
       setLoading(false);
       return;
     }
     fetchProducts();
-  }, [activeTab, initialProducts]);
+  }, [activeTab]); // Intentionally omitting initialProducts to prevent unnecessary loops
 
   const fetchProducts = async () => {
     setLoading(true);

@@ -34,7 +34,8 @@ export async function POST(req: Request) {
       const cleanPass = process.env.SMTP_PASS.replace(/['"]+/g, '');
       
       const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.SMTP_HOST || "sandbox.smtp.mailtrap.io",
+        port: parseInt(process.env.SMTP_PORT || "2525"),
         auth: {
           user: process.env.SMTP_USER,
           pass: cleanPass,
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
       });
 
       await transporter.sendMail({
-        from: `SDPT Store <${process.env.SMTP_USER}>`,
+        from: `SDPT Store <${process.env.SMTP_FROM_EMAIL || "noreply@sdpttech.com"}>`,
         to: email,
         subject: "Your Email Verification OTP",
         html: `

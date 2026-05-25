@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
-import Swal from "sweetalert2";
 import { getProducts } from "@/actions/product";
 import { useSession } from "next-auth/react";
 import { syncUserWishlist, getUserData } from "@/actions/user-sync";
@@ -65,8 +64,9 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
     fetchWishlistItems();
   }, [wishlist, status, storageKey, isInitialLoad]);
 
-  const toggleWishlist = (id: string) => {
+  const toggleWishlist = async (id: string) => {
     const next = new Set(wishlist);
+    const Swal = (await import("sweetalert2")).default;
     if (next.has(id)) {
       next.delete(id);
       Swal.fire({

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
-import Swal from "sweetalert2";
 import { useSession } from "next-auth/react";
 import { syncUserCart, getUserData } from "@/actions/user-sync";
 
@@ -52,11 +51,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [cart, status, storageKey, isInitialLoad]);
 
-  const addToCart = (product: any) => {
+  const addToCart = async (product: any) => {
     const isLoggedIn = status === "authenticated" || (status === "loading" && localStorage.getItem('isLoggedIn') === 'true');
     
     if (!isLoggedIn) {
       window.dispatchEvent(new Event('openAuthModal'));
+      const Swal = (await import("sweetalert2")).default;
       Swal.fire({
         title: "Login Required",
         text: "Please sign in to add items to your cart.",
@@ -81,6 +81,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       return [...prev, { ...product, id: productId, qty: product.qty || 1 }];
     });
 
+    const Swal = (await import("sweetalert2")).default;
     Swal.fire({
       title: "Added to Cart!",
       text: `${product.name} is now in your cart.`,
