@@ -154,7 +154,7 @@ export default function ReturnPolicyPage() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-400 uppercase tracking-wider font-bold mb-0.5">Email</p>
-                      <a href="mailto:info@gatecode.in" className="text-sm font-semibold hover:text-blue-400">info@gatecode.in</a>
+                      <a href="mailto:info@sdpt.com" className="text-sm font-semibold hover:text-blue-400">info@sdpt.com</a>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
@@ -172,7 +172,7 @@ export default function ReturnPolicyPage() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-400 uppercase tracking-wider font-bold mb-0.5">Website</p>
-                      <a href="http://www.sdpt.in" target="_blank" rel="noreferrer" className="text-sm font-semibold hover:text-purple-400">www.sdpt.in</a>
+                      <a href="https://sdpttech.com" target="_blank" rel="noreferrer" className="text-sm font-semibold hover:text-purple-400">sdpttech.com</a>
                     </div>
                   </div>
                 </div>

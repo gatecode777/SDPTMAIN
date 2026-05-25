@@ -178,7 +178,7 @@ export default function TermsAndConditionsPage() {
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-0.5">Email</p>
-                    <a href="mailto:info@gatecode.in" className="text-sm font-semibold hover:text-indigo-600 transition-colors">info@gatecode.in</a>
+                    <a href="mailto:info@sdpt.com" className="text-sm font-semibold hover:text-indigo-600 transition-colors">info@sdpt.com</a>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100 transition-transform hover:-translate-y-1">
@@ -196,7 +196,7 @@ export default function TermsAndConditionsPage() {
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-0.5">Website</p>
-                    <a href="http://www.sdpt.in" target="_blank" rel="noreferrer" className="text-sm font-semibold hover:text-indigo-600 transition-colors">www.sdpt.in</a>
+                    <a href="https://sdpttech.com" target="_blank" rel="noreferrer" className="text-sm font-semibold hover:text-indigo-600 transition-colors">sdpttech.com</a>
                   </div>
                 </div>
               </div>
