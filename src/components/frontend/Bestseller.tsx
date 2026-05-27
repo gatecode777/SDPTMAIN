@@ -106,7 +106,7 @@ const BestSeller = ({ initialProducts = [] }: { initialProducts?: Product[] }) =
           </div>
           <div className="bs-tabs">
             {tabs.map((tab) => (
-              <button key={tab} className={`bs-tab ${activeTab === tab ? "bs-tab--active" : ""}`} onClick={() => setActiveTab(tab)}>{tab}</button>
+              <button key={tab} className={`bs-tab ${activeTab === tab ? "bs-tab--active" : ""}`} onClick={() => setActiveTab(tab)} suppressHydrationWarning>{tab}</button>
             ))}
           </div>
         </div>

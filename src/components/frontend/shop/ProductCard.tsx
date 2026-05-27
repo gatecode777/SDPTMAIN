@@ -121,6 +121,7 @@ export default function ProductCard({
             className={`pc-action-btn ${isInWishlist(product._id) ? "pc-action-btn--liked" : ""}`}
             onClick={() => toggleWishlist(product._id)}
             title="Wishlist"
+            suppressHydrationWarning
           >
             <FiHeart size={18} />
           </button>
@@ -134,6 +135,7 @@ export default function ProductCard({
               qty: 1
             })}
             title="Add to Cart"
+            suppressHydrationWarning
           >
             <FiShoppingCart size={18} />
           </button>
@@ -141,6 +143,7 @@ export default function ProductCard({
             className="pc-action-btn"
             onClick={handleCardClick}
             title="Quick View"
+            suppressHydrationWarning
           >
             <FiEye size={18} />
           </button>
@@ -199,6 +202,7 @@ export default function ProductCard({
                 qty: 1
               });
             }}
+            suppressHydrationWarning
           >
             <FiShoppingCart size={15} style={{ marginRight: '6px' }} /> add to cart
           </button>
@@ -210,6 +214,7 @@ export default function ProductCard({
               handleCardClick();
             }}
             title="Quick View"
+            suppressHydrationWarning
           >
             <FiEye size={16} />
           </button>

@@ -78,8 +78,8 @@ const Categories = ({ initialCategories = [] }: { initialCategories?: Category[]
               <h2 className="cat-title">Shop by Components</h2>
             </div>
             <div className="cat-header-right">
-              <button aria-label="Scroll left" className="cat-arrow" onClick={() => scroll("left")}><FiChevronLeft size={18} /></button>
-              <button aria-label="Scroll right" className="cat-arrow" onClick={() => scroll("right")}><FiChevronRight size={18} /></button>
+              <button aria-label="Scroll left" className="cat-arrow" onClick={() => scroll("left")} suppressHydrationWarning><FiChevronLeft size={18} /></button>
+              <button aria-label="Scroll right" className="cat-arrow" onClick={() => scroll("right")} suppressHydrationWarning><FiChevronRight size={18} /></button>
             </div>
           </div>
 

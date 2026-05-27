@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   serverExternalPackages: ["mongoose"],
-  allowedDevOrigins: ["192.168.1.81", "localhost:3000"],
+  allowedDevOrigins: ["192.168.1.81", "https://sdpttech.com"],
   experimental: {
     serverActions: {
       bodySizeLimit: "10mb",

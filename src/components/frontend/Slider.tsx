@@ -25,6 +25,36 @@ const slides = [
     img: "/images/pc3.webp",
     accent: "NEW ARRIVALS",
   },
+  {
+    title: "Ultimate\nStreaming Setup",
+    desc: "Dominate your stream with multi-core processors and extreme multitasking capabilities.",
+    img: "/images/streaming_setup_pc.png",
+    accent: "STREAMING READY",
+  },
+  {
+    title: "Professional\nWorkstations",
+    desc: "Accelerate your workflow with powerhouse workstations tailored for heavy rendering.",
+    img: "/images/workstation_pc.png",
+    accent: "WORKSTATIONS",
+  },
+  {
+    title: "Esports\nDomination",
+    desc: "Gain the competitive edge with ultra-high frame rates and zero lag performance.",
+    img: "/images/esports_pc.png",
+    accent: "ESPORTS READY",
+  },
+  {
+    title: "Compact\nPowerhouses",
+    desc: "Small form factor builds that pack a massive punch without taking up desk space.",
+    img: "/images/mini_itx_pc.png",
+    accent: "MINI-ITX BUILDS",
+  },
+  {
+    title: "Water-Cooled\nPerfection",
+    desc: "Stay icy cool under pressure with premium custom water-cooling loops.",
+    img: "/images/water_cooled_pc.png",
+    accent: "PREMIUM COOLING",
+  },
 ];
 
 const HeroSlider = () => {
@@ -89,16 +119,16 @@ const HeroSlider = () => {
         ))}
       </div>
 
-      <button aria-label="Previous Slide" className="hero-arrow hero-arrow--left" onClick={prev}>
+      <button aria-label="Previous Slide" className="hero-arrow hero-arrow--left" onClick={prev} suppressHydrationWarning>
         <FiChevronLeft size={22} />
       </button>
-      <button aria-label="Next Slide" className="hero-arrow hero-arrow--right" onClick={next}>
+      <button aria-label="Next Slide" className="hero-arrow hero-arrow--right" onClick={next} suppressHydrationWarning>
         <FiChevronRight size={22} />
       </button>
 
       <div className="hero-dots">
         {slides.map((_, i) => (
-          <button aria-label={`Go to slide ${i + 1}`} key={i} className={`hero-dot ${i === index ? "active" : ""}`} onClick={() => goTo(i)}>
+          <button aria-label={`Go to slide ${i + 1}`} key={i} className={`hero-dot ${i === index ? "active" : ""}`} onClick={() => goTo(i)} suppressHydrationWarning>
             <span className="hero-dot-fill"></span>
           </button>
         ))}
