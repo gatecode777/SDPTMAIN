@@ -212,9 +212,9 @@ const Header = () => {
 
   return (
     <>
-      <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
+      <header className={`header ${scrolled ? "header--scrolled" : ""}`} suppressHydrationWarning>
         <div className="header-inner">
-          <button aria-label="Toggle Menu" className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button aria-label="Toggle Menu" className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} suppressHydrationWarning>
             {mobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
           </button>
 
@@ -262,13 +262,13 @@ const Header = () => {
           </nav>
 
           <div className="header-icons">
-            <button aria-label="Search" className="icon-btn desktop-only" onClick={() => setSearchOpen(true)}><FiSearch size={22} /></button>
-            <button aria-label="User Account" className="icon-btn" onClick={handleAccountClick}><FiUser size={22} /></button>
-            <button aria-label="Wishlist" className="icon-btn desktop-only" onClick={() => handleNav("/wishlist")}>
+            <button aria-label="Search" className="icon-btn desktop-only" onClick={() => setSearchOpen(true)} suppressHydrationWarning><FiSearch size={22} /></button>
+            <button aria-label="User Account" className="icon-btn" onClick={handleAccountClick} suppressHydrationWarning><FiUser size={22} /></button>
+            <button aria-label="Wishlist" className="icon-btn desktop-only" onClick={() => handleNav("/wishlist")} suppressHydrationWarning>
               <FiHeart size={22} />
               {mounted && wishlistCount > 0 && <span className="cart-badge wishlist-badge">{wishlistCount}</span>}
             </button>
-            <button aria-label="Cart" className="icon-btn cart-btn" onClick={() => handleNav("/cart")}>
+            <button aria-label="Cart" className="icon-btn cart-btn" onClick={() => handleNav("/cart")} suppressHydrationWarning>
               <FiShoppingBag size={22} />
               {mounted && cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </button>
@@ -278,7 +278,7 @@ const Header = () => {
         <div className="mobile-search-container">
           <form onSubmit={handleSearch} className="mobile-search-form">
             <FiSearch size={18} />
-            <input type="text" placeholder="Search for products..." value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input type="text" placeholder="Search for products..." value={query} onChange={(e) => setQuery(e.target.value)} suppressHydrationWarning />
           </form>
         </div>
       </header>
@@ -289,12 +289,12 @@ const Header = () => {
           <span className="drawer-logo">
             <Image src={logo} alt="SDTP Logo" className="drawer-logo-img" width={120} height={32} priority />
           </span>
-          <button aria-label="Close Menu" className="drawer-close" onClick={() => setMobileMenuOpen(false)}><FiX size={22} /></button>
+          <button aria-label="Close Menu" className="drawer-close" onClick={() => setMobileMenuOpen(false)} suppressHydrationWarning><FiX size={22} /></button>
         </div>
         <div className="drawer-search">
           <form onSubmit={handleSearch} className="drawer-search-form">
             <FiSearch size={16} />
-            <input type="text" placeholder="Search CPU, GPU, RAM..." value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input type="text" placeholder="Search CPU, GPU, RAM..." value={query} onChange={(e) => setQuery(e.target.value)} suppressHydrationWarning />
           </form>
         </div>
         <nav className="drawer-nav">

@@ -84,6 +84,17 @@ export default function ShopClient({
   }, [initialCat, initialQ]);
 
   useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = showMobileFilter ? "hidden" : "";
+    }
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = "";
+      }
+    };
+  }, [showMobileFilter]);
+
+  useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
       return;

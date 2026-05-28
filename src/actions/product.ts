@@ -11,7 +11,7 @@ export async function getProducts(
   query = {},
   page = 1,
   limit = 10,
-  select = "name slug price mrp discountPercentage offerPrice thumbnail averageRating totalReviews category status createdAt shortDescription description"
+  select = "name slug price mrp discountPercentage offerPrice thumbnail averageRating totalReviews category status createdAt shortDescription"
 ) {
   const queryStr = JSON.stringify(query);
   const cacheKey = `products-list-${queryStr}-${page}-${limit}-${select}`;
@@ -29,7 +29,7 @@ export async function getProducts(
         
         const [products, total] = await Promise.all([
           queryBuilder
-            .populate("category")
+            .populate("category", "name slug")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)

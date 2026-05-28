@@ -12,6 +12,8 @@ import { getCategories } from "@/actions/category";
 import { getProducts } from "@/actions/product";
 import { getBanner } from "@/actions/banner";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Fetch homepage data concurrently on the server
   const [categories, bestsellerData, bannerData] = await Promise.all([

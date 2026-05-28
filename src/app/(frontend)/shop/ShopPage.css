@@ -700,7 +700,7 @@
 
 /* Mobile Fixes */
 @media (max-width: 1024px) {
-  .shop-container { margin-top: 0; padding: 20px; flex-direction: column; }
+  .shop-container { margin-top: 0; padding: 20px; flex-direction: column; z-index: auto !important; }
   .shop-sidebar {
     position: fixed !important;
     top: 0 !important;
@@ -713,6 +713,9 @@
     z-index: 2100 !important;
     padding: 30px !important;
     overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important; /* Enable inertial smooth momentum scrolling on iOS */
+    overscroll-behavior: contain !important;       /* Block scroll leaking to background shop page */
+    box-sizing: border-box !important;              /* Ensure padding doesn't stretch element beyond screen height */
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: 20px 0 50px rgba(0,0,0,0.1) !important;
   }
@@ -844,13 +847,13 @@
 
 /* Backdrop */
 .filter-backdrop {
-  -webkit-backdrop-filter: none !important;
   z-index: 2000 !important;
-  background: #ffffff00 !important;
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
   animation: .3s fadeIn !important;
   position: fixed !important;
   inset: 0 !important;
-  overflow-y: auto !important;
 }
 
 @keyframes fadeIn {

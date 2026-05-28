@@ -16,13 +16,61 @@ import { submitQuery } from "@/actions/query";
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [errors, setErrors] = useState({ email: "", phone: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
+  const validateEmail = (email: string) => {
+    if (!email) return "Email is required";
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!regex.test(email)) return "Please enter a valid email address";
+    return "";
+  };
+
+  const validatePhone = (phone: string) => {
+    if (!phone) return ""; // Phone is optional in this form
+    
+    const cleanPhone = phone.replace(/\D/g, "");
+    if (cleanPhone.length !== 10) {
+      return "Phone number must be exactly 10 digits";
+    }
+    return "";
+  };
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    let val = value;
+
+    if (name === "phone") {
+      // Restrict typing to only digits and maximum 10 digits
+      val = value.replace(/\D/g, "").slice(0, 10);
+    }
+
+    setForm(prev => {
+      const updated = { ...prev, [name]: val };
+      
+      // Real-time validation
+      if (name === "email") {
+        setErrors(err => ({ ...err, email: validateEmail(val) }));
+      } else if (name === "phone") {
+        setErrors(err => ({ ...err, phone: validatePhone(val) }));
+      }
+      
+      return updated;
+    });
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    
+    const emailErr = validateEmail(form.email);
+    const phoneErr = validatePhone(form.phone);
+    
+    if (emailErr || phoneErr) {
+      setErrors({ email: emailErr, phone: phoneErr });
+      return;
+    }
+
     setLoading(true);
     const res = await submitQuery(form);
     setLoading(false);
@@ -100,7 +148,7 @@ const ContactPage = () => {
                     required
                   />
                 </div>
-                <div className="form-group">
+                <div className={`form-group ${errors.email ? "has-error" : ""}`}>
                   <label>Email Address *</label>
                   <input
                     type="email"
@@ -110,11 +158,12 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                   />
+                  {errors.email && <span className="form-error-msg">{errors.email}</span>}
                 </div>
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className={`form-group ${errors.phone ? "has-error" : ""}`}>
                   <label>Phone Number</label>
                   <input
                     type="tel"
@@ -123,6 +172,7 @@ const ContactPage = () => {
                     value={form.phone}
                     onChange={handleChange}
                   />
+                  {errors.phone && <span className="form-error-msg">{errors.phone}</span>}
                 </div>
                 <div className="form-group">
                   <label>Subject *</label>

@@ -49,11 +49,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
     const { name, value } = e.target;
 
     if (name === "phone") {
-      
+
       const cleaned = value.replace(/\D/g, "").slice(0, 10);
       setFormData({ ...formData, [name]: cleaned });
     } else if (name === "name") {
-      
+
       const cleaned = value.replace(/[^a-zA-Z\s]/g, "");
       setFormData({ ...formData, [name]: cleaned });
     } else {
@@ -64,6 +64,19 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Full Email Validation check for both login and signup
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!formData.email) {
+      toast.error("Email address is required");
+      setLoading(false);
+      return;
+    }
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      setLoading(false);
+      return;
+    }
 
     // Validation for Sign Up
     if (!isLogin) {
@@ -88,9 +101,9 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         setLoading(false);
         return;
       }
-      const phoneRegex = /^\d+$/;
+      const phoneRegex = /^[6-9]\d{9}$/;
       if (!phoneRegex.test(formData.phone)) {
-        toast.error("Phone number should only contain digits");
+        toast.error("Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9");
         setLoading(false);
         return;
       }
@@ -98,7 +111,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
     try {
       if (isLogin) {
-        
+
         const result = await signIn("credentials", {
           email: formData.email,
           password: formData.password,
@@ -114,7 +127,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           onClose();
         }
       } else {
-        
+
         const res = await fetch("/api/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -142,7 +155,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       toast.error("Please enter a valid email address");
       return;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
       toast.error("Please enter a valid email address");
       return;
@@ -268,9 +281,9 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               />
             </div>
             {!isLogin && !otpVerified && (
-              <button 
-                type="button" 
-                onClick={handleSendOtp} 
+              <button
+                type="button"
+                onClick={handleSendOtp}
                 disabled={otpLoading || !formData.email}
                 style={{ padding: '0 15px', borderRadius: '8px', background: '#111', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '500', minWidth: '95px' }}
               >
@@ -297,9 +310,9 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                   style={{ paddingLeft: '50px' }}
                 />
               </div>
-              <button 
-                type="button" 
-                onClick={handleVerifyOtp} 
+              <button
+                type="button"
+                onClick={handleVerifyOtp}
                 disabled={otpLoading || otp.length !== 4}
                 style={{ padding: '0 15px', borderRadius: '8px', background: '#2563eb', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '500', minWidth: '95px' }}
               >
@@ -326,16 +339,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                 <input type="checkbox" />
                 <span>Remember me</span>
               </label>
-              <a
-                href="#"
-                className="auth-forgot"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toast.success("Password reset link has been sent to your email!");
-                }}
-              >
-                Forgot Password?
-              </a>
+
             </div>
           )}
 
