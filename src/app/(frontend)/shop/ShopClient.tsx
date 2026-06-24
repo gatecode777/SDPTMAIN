@@ -33,6 +33,8 @@ interface Product {
   totalReviews?: number;
   shortDescription?: string;
   discountPercentage?: number;
+  description?: string;
+  images?: string[];
 }
 
 interface Category {

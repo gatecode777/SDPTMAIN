@@ -138,7 +138,7 @@ export default function TermsAndConditionsPage() {
                   <p className="text-sm text-slate-300">Users are responsible for credentials. We are not liable for unauthorized access or password misuse. We may suspend fraudulent accounts.</p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold mb-3 text-white font-['Albert_Sans']">9. Limitation of Liability</h3>
+                  <h3 className="text-lg font-bold mb-3 text-white font-['Albert_Sans']">8. Limitation of Liability</h3>
                   <p className="text-sm text-slate-300">SDPT is not liable for indirect damages, loss of profits, business interruptions, or technical downtime. Use of products is at your own risk.</p>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default function TermsAndConditionsPage() {
             {}
             <div className="grid md:grid-cols-2 gap-8">
               <section className="space-y-3">
-                <h2 className="text-lg font-bold text-slate-900">8. Intellectual Property</h2>
+                <h2 className="text-lg font-bold text-slate-900">9. Intellectual Property</h2>
                 <p className="text-sm">All website content (logos, graphics, text, code) is the property of SDPT and may not be copied or reproduced without permission.</p>
               </section>
               <section className="space-y-3">
@@ -163,8 +163,12 @@ export default function TermsAndConditionsPage() {
                 <p className="text-sm">Your use of the website is also governed by our Privacy Policy. By using our services, you consent to its terms.</p>
               </section>
               <section className="space-y-3">
-                <h2 className="text-lg font-bold text-slate-900">13 & 14. Changes & Law</h2>
-                <p className="text-sm">We may update these terms at any time. Disputes shall be governed by the laws of India and subject to courts in Rajasthan.</p>
+                <h2 className="text-lg font-bold text-slate-900">13. Changes to Terms</h2>
+                <p className="text-sm">We may update these terms at any time without prior notice. Continued use of the website constitutes acceptance of revised terms.</p>
+              </section>
+              <section className="space-y-3">
+                <h2 className="text-lg font-bold text-slate-900">14. Governing Law</h2>
+                <p className="text-sm">Disputes shall be governed by the laws of India and subject to courts in Rajasthan.</p>
               </section>
             </div>
 

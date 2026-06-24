@@ -22,6 +22,8 @@ interface Product {
   badge?: string;
   averageRating?: number;
   totalReviews?: number;
+  description?: string;
+  images?: string[];
 }
 
 const tabs = ["All", "GPUs", "CPUs", "Storage", "Memory", "Cases"];

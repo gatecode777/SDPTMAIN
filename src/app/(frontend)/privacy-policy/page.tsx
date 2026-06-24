@@ -146,19 +146,19 @@ export default function PrivacyPolicyPage() {
             {}
             <div className="grid md:grid-cols-2 gap-8 pt-4">
               <section className="space-y-3">
-                <h2 className="text-lg font-bold text-slate-900">7. User Rights</h2>
+                <h2 className="text-lg font-bold text-slate-900">6. User Rights</h2>
                 <p className="text-sm">You have the right to access your data, request corrections, request deletion (subject to legal obligations), and opt out of marketing communications.</p>
               </section>
               <section className="space-y-3">
-                <h2 className="text-lg font-bold text-slate-900">8. Third-Party Links</h2>
+                <h2 className="text-lg font-bold text-slate-900">7. Third-Party Links</h2>
                 <p className="text-sm">Our site contains links to external services. SDPT is not responsible for their privacy practices. Review their policies before sharing info.</p>
               </section>
               <section className="space-y-3">
-                <h2 className="text-lg font-bold text-slate-900">9. Children's Privacy</h2>
+                <h2 className="text-lg font-bold text-slate-900">8. Children's Privacy</h2>
                 <p className="text-sm">Our services are not for individuals under 18. We do not knowingly collect personal info from minors.</p>
               </section>
               <section className="space-y-3">
-                <h2 className="text-lg font-bold text-slate-900">10. Policy Changes</h2>
+                <h2 className="text-lg font-bold text-slate-900">9. Policy Changes</h2>
                 <p className="text-sm">SDPT reserves the right to update this policy at any time without prior notice. Updates will be posted here.</p>
               </section>
             </div>
@@ -167,7 +167,7 @@ export default function PrivacyPolicyPage() {
             <section className="mt-12 bg-slate-900 text-white rounded-2xl p-8 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
               <div className="relative z-10">
-                <h2 className="text-2xl font-bold text-white mb-6 font-['Albert_Sans']">11. Contact Information</h2>
+                <h2 className="text-2xl font-bold text-white mb-6 font-['Albert_Sans']">10. Contact Information</h2>
                 <p className="text-slate-300 mb-6">If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us:</p>
                 <div className="grid sm:grid-cols-3 gap-6">
                   <div className="flex items-center gap-4 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 transition-transform hover:-translate-y-1">

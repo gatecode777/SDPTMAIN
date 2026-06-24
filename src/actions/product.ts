@@ -11,7 +11,7 @@ export async function getProducts(
   query = {},
   page = 1,
   limit = 10,
-  select = "name slug price mrp discountPercentage offerPrice thumbnail averageRating totalReviews category status createdAt shortDescription"
+  select = "name slug price mrp discountPercentage offerPrice thumbnail images averageRating totalReviews category status createdAt shortDescription description"
 ) {
   const queryStr = JSON.stringify(query);
   const cacheKey = `products-list-${queryStr}-${page}-${limit}-${select}`;

@@ -18,6 +18,8 @@ interface Product {
   averageRating?: number;
   totalReviews?: number;
   shortDescription?: string;
+  description?: string;
+  images?: string[];
 }
 
 const Stars = ({ rating }: { rating: number }) => (
