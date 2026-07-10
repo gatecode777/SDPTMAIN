@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function WizardPage() {
+function WizardContent() {
   const { status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -689,5 +689,20 @@ export default function WizardPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function WizardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-['Poppins']">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 text-[#102E63] animate-spin" />
+          <span className="text-xs text-slate-500 font-semibold">Loading wizard...</span>
+        </div>
+      </div>
+    }>
+      <WizardContent />
+    </Suspense>
   );
 }

@@ -315,7 +315,7 @@ export default function SiteTemplate({ website }: SiteTemplateProps) {
   }, [brand.typography]);
 
   // Framer Motion Animation Presets mapping
-  const getAnimationVariants = () => {
+  const getAnimationVariants = (): any => {
     if (website.animations === "None") {
       return {
         hidden: { opacity: 1, y: 0 },
@@ -1164,27 +1164,27 @@ export default function SiteTemplate({ website }: SiteTemplateProps) {
             <div className="flex items-center justify-center gap-5 pt-1 pb-3">
               {website.socialLinks.facebook && (
                 <a href={website.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="opacity-75 hover:opacity-100 hover:scale-105 transition-all" style={{ color: themeColors.text }}>
-                  <Lucide.Facebook className="w-4 h-4" />
+                  {React.createElement((Lucide as any).Facebook || (Lucide as any).Sparkles, { className: "w-4 h-4" })}
                 </a>
               )}
               {website.socialLinks.instagram && (
                 <a href={website.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="opacity-75 hover:opacity-100 hover:scale-105 transition-all" style={{ color: themeColors.text }}>
-                  <Lucide.Instagram className="w-4 h-4" />
+                  {React.createElement((Lucide as any).Instagram || (Lucide as any).Sparkles, { className: "w-4 h-4" })}
                 </a>
               )}
               {website.socialLinks.linkedin && (
                 <a href={website.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="opacity-75 hover:opacity-100 hover:scale-105 transition-all" style={{ color: themeColors.text }}>
-                  <Lucide.Linkedin className="w-4 h-4" />
+                  {React.createElement((Lucide as any).Linkedin || (Lucide as any).Sparkles, { className: "w-4 h-4" })}
                 </a>
               )}
               {website.socialLinks.twitter && (
                 <a href={website.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="opacity-75 hover:opacity-100 hover:scale-105 transition-all" style={{ color: themeColors.text }}>
-                  <Lucide.Twitter className="w-4 h-4" />
+                  {React.createElement((Lucide as any).Twitter || (Lucide as any).Sparkles, { className: "w-4 h-4" })}
                 </a>
               )}
               {website.socialLinks.youtube && (
                 <a href={website.socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="opacity-75 hover:opacity-100 hover:scale-105 transition-all" style={{ color: themeColors.text }}>
-                  <Lucide.Youtube className="w-4 h-4" />
+                  {React.createElement((Lucide as any).Youtube || (Lucide as any).Sparkles, { className: "w-4 h-4" })}
                 </a>
               )}
             </div>
