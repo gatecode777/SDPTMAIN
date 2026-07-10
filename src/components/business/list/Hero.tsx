@@ -5,8 +5,19 @@ import { motion } from "framer-motion";
 import Button from "@/components/business/Button";
 import { useRouter } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 export default function Hero() {
   const router = useRouter();
+  const { status } = useSession();
+
+  const handleStartFree = () => {
+    if (status === "authenticated") {
+      router.push("/builder/wizard");
+    } else {
+      window.dispatchEvent(new Event("openAuthModal"));
+    }
+  };
 
   return (
     <section className="relative py-24 md:py-32 bg-[#102E63] text-white overflow-hidden text-center flex flex-col items-center justify-center">
@@ -53,7 +64,7 @@ export default function Hero() {
         >
           <Button 
             variant="primary" 
-            onClick={() => router.push("/builder/wizard")}
+            onClick={handleStartFree}
             className="bg-[#00B4D8] hover:bg-[#0096b4] text-[#102E63] font-bold shadow-lg shadow-[#00B4D8]/10 px-8 py-4 cursor-pointer"
           >
             Get Started Free →

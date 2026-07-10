@@ -4,8 +4,19 @@ import React from "react";
 import Button from "@/components/business/Button";
 import { useRouter } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 export default function CTA() {
   const router = useRouter();
+  const { status } = useSession();
+
+  const handleStartFree = () => {
+    if (status === "authenticated") {
+      router.push("/builder/wizard");
+    } else {
+      window.dispatchEvent(new Event("openAuthModal"));
+    }
+  };
 
   return (
     <section className="py-24 bg-[#102E63] text-white text-center relative overflow-hidden flex flex-col items-center justify-center">
@@ -21,7 +32,7 @@ export default function CTA() {
         </p>
         <Button 
           variant="primary" 
-          onClick={() => router.push("/builder/wizard")}
+          onClick={handleStartFree}
           className="bg-white hover:bg-slate-50 text-[#102E63] font-bold px-8 py-4 shadow-lg shadow-white/5 cursor-pointer"
         >
           Get Started Free →

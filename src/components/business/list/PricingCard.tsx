@@ -7,6 +7,8 @@ import Button from "@/components/business/Button";
 import { Check } from "lucide-react";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface PricingCardProps {
   plan: PricingPlan;
@@ -14,6 +16,16 @@ interface PricingCardProps {
 
 export default function PricingCard({ plan }: PricingCardProps) {
   const isFeatured = plan.isPopular;
+  const { status } = useSession();
+  const router = useRouter();
+
+  const handlePricingClick = () => {
+    if (status === "authenticated") {
+      router.push("/builder/wizard");
+    } else {
+      window.dispatchEvent(new Event("openAuthModal"));
+    }
+  };
   
   return (
     <Card 
@@ -57,14 +69,24 @@ export default function PricingCard({ plan }: PricingCardProps) {
         </ul>
       </div>
 
-      <Link href={plan.name.toLowerCase() === "free" ? "/builder/wizard" : `/business/checkout?plan=${plan.name.toLowerCase()}`} className="w-full">
+      {plan.name.toLowerCase() === "free" ? (
         <Button 
           variant={isFeatured ? "primary" : "secondary"}
-          className={`w-full mt-auto ${isFeatured ? "bg-blue-600 hover:bg-blue-700 text-white" : ""}`}
+          onClick={handlePricingClick}
+          className={`w-full mt-auto cursor-pointer ${isFeatured ? "bg-blue-600 hover:bg-blue-700 text-white" : ""}`}
         >
           {plan.cta}
         </Button>
-      </Link>
+      ) : (
+        <Link href={`/business/checkout?plan=${plan.name.toLowerCase()}`} className="w-full">
+          <Button 
+            variant={isFeatured ? "primary" : "secondary"}
+            className={`w-full mt-auto cursor-pointer ${isFeatured ? "bg-blue-600 hover:bg-blue-700 text-white" : ""}`}
+          >
+            {plan.cta}
+          </Button>
+        </Link>
+      )}
     </Card>
   );
 }

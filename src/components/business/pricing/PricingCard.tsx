@@ -7,6 +7,8 @@ import Button from "@/components/business/Button";
 import FeatureList from "./FeatureList";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface PricingCardProps {
   plan: PricingPlan;
@@ -14,7 +16,9 @@ interface PricingCardProps {
 
 export default function PricingCard({ plan }: PricingCardProps) {
   const isFeatured = plan.isPopular;
-  
+  const { status } = useSession();
+  const router = useRouter();
+
   // Custom button styling based on plan name
   let btnClass = "";
   let btnVariant: "primary" | "secondary" = "secondary";
@@ -29,6 +33,14 @@ export default function PricingCard({ plan }: PricingCardProps) {
     btnVariant = "secondary";
     btnClass = "border border-blue-600 text-blue-600 hover:bg-blue-50/50 w-full py-4";
   }
+
+  const handleFreeClick = () => {
+    if (status === "authenticated") {
+      router.push("/builder/wizard");
+    } else {
+      window.dispatchEvent(new Event("openAuthModal"));
+    }
+  };
 
   return (
     <Card 
@@ -63,14 +75,12 @@ export default function PricingCard({ plan }: PricingCardProps) {
       </div>
 
       {plan.name === "FREE" ? (
-        <Link href="/builder/wizard" className="w-full">
-          <Button variant={btnVariant} className={btnClass}>
-            {plan.cta}
-          </Button>
-        </Link>
+        <Button variant={btnVariant} className={`${btnClass} cursor-pointer`} onClick={handleFreeClick}>
+          {plan.cta}
+        </Button>
       ) : (
         <Link href={plan.name === "STARTER" ? "/business/checkout?plan=pro" : "/business/checkout?plan=business"} className="w-full">
-          <Button variant={btnVariant} className={btnClass}>
+          <Button variant={btnVariant} className={`${btnClass} cursor-pointer`}>
             {plan.cta}
           </Button>
         </Link>
