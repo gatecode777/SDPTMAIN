@@ -190,9 +190,9 @@ export default function DashboardPage() {
       if (isLocal) {
         return `http://${sub}.localhost:3000`;
       }
-      return `https://${sub}.sdpt.in`;
+      return `https://${sub}.sdpttech.com`;
     }
-    return `https://${sub}.sdpt.in`;
+    return `https://${sub}.sdpttech.com`;
   };
 
   const getPlanBadge = (plan: string) => {
@@ -294,7 +294,7 @@ export default function DashboardPage() {
                     {/* Address preview */}
                     <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold mb-4">
                       <Globe className="w-3.5 h-3.5" />
-                      <span>{web.subdomain}.sdpt.in</span>
+                      <span>{web.subdomain}.sdpttech.com</span>
                     </div>
 
                     <p className="text-xs text-[#666] leading-relaxed line-clamp-3 mb-6">
@@ -313,7 +313,7 @@ export default function DashboardPage() {
                           onChange={(e) => setNewSubdomain(e.target.value.toLowerCase().replace(/\s+/g, ""))}
                           className="w-full outline-none text-slate-800 text-xs bg-transparent"
                         />
-                        <span className="text-slate-400 font-semibold">.sdpt.in</span>
+                        <span className="text-slate-400 font-semibold">.sdpttech.com</span>
                       </div>
                       <div className="flex gap-2">
                         <Button 

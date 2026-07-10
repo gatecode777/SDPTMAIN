@@ -625,7 +625,7 @@ function CheckoutContent() {
                             placeholder="acme"
                             className="w-full py-3 outline-none bg-transparent"
                           />
-                          <span className="text-slate-400 font-semibold">.sdpt.in</span>
+                          <span className="text-slate-400 font-semibold">.sdpttech.com</span>
                         </div>
                       </div>
                     </div>

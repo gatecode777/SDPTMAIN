@@ -601,7 +601,7 @@ function WizardContent() {
                           })}
                           className="w-full outline-none text-slate-800 bg-transparent text-xs"
                         />
-                        <span className="text-slate-400 font-semibold select-none">.sdpt.in</span>
+                        <span className="text-slate-400 font-semibold select-none">.sdpttech.com</span>
                       </div>
                       
                       {/* Check validation tags */}
@@ -644,7 +644,7 @@ function WizardContent() {
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold text-slate-400">SUBDOMAIN</span>
-                      <span className="font-bold text-blue-600 font-semibold">{formData.subdomain}.sdpt.in</span>
+                      <span className="font-bold text-blue-600 font-semibold">{formData.subdomain}.sdpttech.com</span>
                     </div>
                   </div>
                 </div>
