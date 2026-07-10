@@ -285,3 +285,8 @@
   margin: 0 8px 0 0 !important;
   transform: scale(0.6);
 }
+
+/* Hide global e-commerce footer on business page */
+.frontend-body:has(.business-page) .ft {
+  display: none !important;
+}

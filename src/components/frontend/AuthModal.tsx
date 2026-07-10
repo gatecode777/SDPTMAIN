@@ -125,6 +125,14 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
           localStorage.setItem('isLoggedIn', 'true');
           window.dispatchEvent(new Event('authChange'));
           onClose();
+          
+          if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const callback = params.get("callback");
+            if (callback) {
+              window.location.href = callback;
+            }
+          }
         }
       } else {
 

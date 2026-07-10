@@ -3,7 +3,7 @@
 import React, { useContext, useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { FiUser, FiBook, FiBox, FiSettings, FiLogOut, FiCamera, FiEdit2, FiPhone, FiMail, FiLock, FiTruck } from "react-icons/fi";
+import { FiUser, FiBook, FiBox, FiSettings, FiLogOut, FiCamera, FiEdit2, FiPhone, FiMail, FiLock, FiTruck, FiGlobe } from "react-icons/fi";
 import { CartContext } from "@/CartContext";
 import "./Checkout.css";
 import Swal from 'sweetalert2';
@@ -926,6 +926,9 @@ const AccountContent = () => {
         <aside className="co-sidebar">
           <nav className="co-nav">
             <button className={`co-nav-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTabWithParam('profile')}><FiUser size={18} /> My Account</button>
+            <Link href="/dashboard" className="co-nav-link">
+              <FiGlobe size={18} /> AI Workspace
+            </Link>
             <button className={`co-nav-link ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTabWithParam('orders')}><FiBox size={18} /> My Orders</button>
             <button className={`co-nav-link ${activeTab === 'address' ? 'active' : ''}`} onClick={() => setActiveTabWithParam('address')}><FiBook size={18} /> Address Book</button>
             <button className={`co-nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTabWithParam('settings')}><FiSettings size={18} /> Settings</button>

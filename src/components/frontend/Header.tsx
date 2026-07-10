@@ -36,12 +36,14 @@ const Header = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [megaOpen, setMegaOpen] = useState(false);
+  const [businessOpen, setBusinessOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const router = useRouter();
   const pathname = usePathname();
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
+  const businessTimeout = useRef<NodeJS.Timeout | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { data: session, status } = useSession();
@@ -60,6 +62,22 @@ const Header = () => {
   const closeMegaMenu = () => {
     if (megaTimeout.current) clearTimeout(megaTimeout.current);
     setMegaOpen(false);
+  };
+
+  const handleBusinessMouseEnter = () => {
+    if (businessTimeout.current) clearTimeout(businessTimeout.current);
+    setBusinessOpen(true);
+  };
+
+  const handleBusinessMouseLeave = () => {
+    businessTimeout.current = setTimeout(() => {
+      setBusinessOpen(false);
+    }, 150);
+  };
+
+  const closeBusinessMenu = () => {
+    if (businessTimeout.current) clearTimeout(businessTimeout.current);
+    setBusinessOpen(false);
   };
 
   useEffect(() => {
@@ -86,6 +104,7 @@ const Header = () => {
       window.removeEventListener('authChange', handleAuthChange);
       window.removeEventListener('openAuthModal', handleOpenAuth);
       if (megaTimeout.current) clearTimeout(megaTimeout.current);
+      if (businessTimeout.current) clearTimeout(businessTimeout.current);
     };
   }, []);
 
@@ -98,6 +117,17 @@ const Header = () => {
       localStorage.removeItem('isLoggedIn');
     }
   }, [status]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("login") === "true") {
+        setAuthOpen(true);
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, "", newUrl);
+      }
+    }
+  }, []);
 
   const handleAccountClick = () => {
     if (isLoggedIn) {
@@ -155,6 +185,8 @@ const Header = () => {
   useEffect(() => {
     setMobileMenuOpen(false);
     setMobileSubmenu(null);
+    setMegaOpen(false);
+    setBusinessOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -257,6 +289,49 @@ const Header = () => {
                 </div>
               </div>
             </div>
+            
+            <Link 
+              href="/platform" 
+              className={`nav-link ${isActive("/platform") ? "active" : ""}`}
+              onClick={(e) => {
+                if (!isLoggedIn) {
+                  e.preventDefault();
+                  setAuthOpen(true);
+                }
+              }}
+            >
+              Platform
+            </Link>
+            
+            <div 
+              className="nav-link nav-link--has-dropdown"
+              onMouseEnter={handleBusinessMouseEnter}
+              onMouseLeave={handleBusinessMouseLeave}
+            >
+              <Link href="/business" className={`nav-link-inner cursor-pointer ${pathname.startsWith("/business") ? "active" : ""}`} onClick={closeBusinessMenu}>
+                Business <FiChevronDown size={15} className={`nav-arrow ${businessOpen ? "rotated" : ""}`} />
+              </Link>
+              <div className={`dropdown-menu ${businessOpen ? "dropdown-menu--open" : ""}`}>
+                <Link href="/business/list" className="dropdown-link" onClick={closeBusinessMenu}>
+                  List your business
+                </Link>
+                <Link href="/business/categories" className="dropdown-link" onClick={closeBusinessMenu}>
+                  Categories
+                </Link>
+                <Link href="/business#how-it-works" className="dropdown-link" onClick={closeBusinessMenu}>
+                  How it works
+                </Link>
+                <Link href="/business/pricing" className="dropdown-link" onClick={closeBusinessMenu}>
+                  Pricing
+                </Link>
+                <Link href="/business#faq" className="dropdown-link" onClick={closeBusinessMenu}>
+                  Help
+                </Link>
+              </div>
+            </div>
+
+            <Link href="/lenders" className={`nav-link ${isActive("/lenders") ? "active" : ""}`}>Lenders</Link>
+            
             <Link href="/about" className={`nav-link ${isActive("/about") ? "active" : ""}`}>About</Link>
             <Link href="/contact" className={`nav-link ${isActive("/contact") ? "active" : ""}`}>Contact</Link>
           </nav>
@@ -322,6 +397,47 @@ const Header = () => {
               ))}
             </div>
           </div>
+
+          <Link 
+            href="/platform" 
+            className="drawer-link" 
+            onClick={(e) => {
+              setMobileMenuOpen(false);
+              if (!isLoggedIn) {
+                e.preventDefault();
+                setAuthOpen(true);
+              }
+            }}
+          >
+            Platform
+          </Link>
+
+          <div className="drawer-link-group">
+            <div className="drawer-link drawer-link--parent" onClick={() => setMobileSubmenu(mobileSubmenu === "business" ? null : "business")}>
+              Business
+              <FiChevronDown className={`drawer-arrow ${mobileSubmenu === "business" ? "rotated" : ""}`} />
+            </div>
+            <div className={`drawer-submenu ${mobileSubmenu === "business" ? "drawer-submenu--open" : ""}`}>
+              <Link href="/business/list" className="drawer-submenu-link" onClick={() => setMobileMenuOpen(false)}>
+                List your business
+              </Link>
+              <Link href="/business/categories" className="drawer-submenu-link" onClick={() => setMobileMenuOpen(false)}>
+                Categories
+              </Link>
+              <Link href="/business#how-it-works" className="drawer-submenu-link" onClick={() => setMobileMenuOpen(false)}>
+                How it works
+              </Link>
+              <Link href="/business/pricing" className="drawer-submenu-link" onClick={() => setMobileMenuOpen(false)}>
+                Pricing
+              </Link>
+              <Link href="/business#faq" className="drawer-submenu-link" onClick={() => setMobileMenuOpen(false)}>
+                Help
+              </Link>
+            </div>
+          </div>
+
+          <Link href="/lenders" className="drawer-link" onClick={() => setMobileMenuOpen(false)}>Lenders</Link>
+
           <Link href="/about" className="drawer-link" onClick={() => setMobileMenuOpen(false)}>About</Link>
           <Link href="/contact" className="drawer-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
         </nav>

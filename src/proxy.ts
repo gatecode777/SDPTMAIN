@@ -2,11 +2,55 @@ import { auth } from "./auth.edge";
 import { NextResponse } from "next/server";
 
 export default auth((req) => {
+  const pathname = req.nextUrl.pathname;
+  const hostname = req.headers.get("host") || "";
+
+  // 1. Skip static assets, APIs, and next internal files
+  if (
+    pathname.startsWith("/api") || 
+    pathname.startsWith("/_next") || 
+    pathname.includes(".") || 
+    pathname === "/favicon.ico"
+  ) {
+    return null;
+  }
+
+  // 2. Subdomain check
+  const isIpOrLocalhost = 
+    hostname.includes("localhost") || 
+    hostname.includes("127.0.0.1") || 
+    /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}/.test(hostname);
+
+  const hostParts = hostname.split(":")[0].split(".");
+  let isMainDomain = false;
+  let cleanHost = "";
+
+  if (isIpOrLocalhost) {
+    if (hostParts.length > 1 && hostParts[0] !== "localhost" && !/^[0-9]+$/.test(hostParts[0])) {
+      cleanHost = hostParts[0];
+    } else {
+      isMainDomain = true;
+    }
+  } else {
+    if (hostParts.length <= 2) {
+      isMainDomain = true;
+    } else if (hostParts.length === 3 && hostParts[0] === "www") {
+      isMainDomain = true;
+    } else {
+      cleanHost = hostParts[0];
+    }
+  }
+
+  if (!isMainDomain && cleanHost && cleanHost !== "www") {
+    // Rewrite path to /sites/[subdomain]
+    return NextResponse.rewrite(new URL(`/sites/${cleanHost}${pathname}`, req.url));
+  }
+
+  // 3. Admin panel checks (for main domain)
   const isLoggedIn = !!req.auth;
   const role = req.auth?.user?.role;
   const email = req.auth?.user?.email;
   const permissions = (req.auth?.user as any)?.permissions;
-  const pathname = req.nextUrl.pathname;
 
   // Protect admin panel routes
   if (pathname.startsWith("/admin")) {
@@ -92,5 +136,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico).*)"],
 };
