@@ -24,7 +24,7 @@ const Footer = () => {
             <Link href="/" className="ft-logo" onClick={handleLinkClick}>
               <Image src={logo} alt="SDTP Logo" className="ft-logo-img" width={120} height={32} />
             </Link>
-            <p className="ft-address"><FiMapPin size={14} /> 412, Sumer Nagar, Mansarovar, Jaipur, Rajasthan 302020</p>
+            <p className="ft-address"><FiMapPin size={14} /> Nanubhai Centre, Race Course Rd, Hari Nagar, Vadodara - 390007, Gujarat, India</p>
             <p className="ft-contact"><FiMail size={14} /> info@sdpt.com
             </p>
             {/* <p className="ft-contact"><FiPhone size={14} /> +91 8502888838</p> */}

@@ -6,9 +6,9 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import "./ContactPage.css";
 
 const info = [
-  { icon: <FiMail />, label: "Email Us", value: "info@sdpt.com", sub: "We reply within 2 hours" },
+  { icon: <FiMail />, label: "Email Us", value: "[EMAIL_ADDRESS]", sub: "We reply within 2 hours" },
   // { icon: <FiPhone />, label: "Call Us", value: "+91 123 456 7890", sub: "Mon–Sat, 10AM – 7PM" },
-  { icon: <FiMapPin />, label: "Visit Us", value: "412, Sumer Nagar, Mansarovar", sub: "Jaipur, Rajasthan 302020" },
+  { icon: <FiMapPin />, label: "Visit Us", value: "Nanubhai Centre, Race Course Rd, Hari Nagar, Vadodara - 390007", sub: "Gujarat, India" },
   { icon: <FiClock />, label: "Business Hours", value: "Mon – Sat: 10AM – 7PM", sub: "Sunday: Closed" },
 ];
 
@@ -29,7 +29,7 @@ const ContactPage = () => {
 
   const validatePhone = (phone: string) => {
     if (!phone) return ""; // Phone is optional in this form
-    
+
     const cleanPhone = phone.replace(/\D/g, "");
     if (cleanPhone.length !== 10) {
       return "Phone number must be exactly 10 digits";
@@ -48,24 +48,24 @@ const ContactPage = () => {
 
     setForm(prev => {
       const updated = { ...prev, [name]: val };
-      
+
       // Real-time validation
       if (name === "email") {
         setErrors(err => ({ ...err, email: validateEmail(val) }));
       } else if (name === "phone") {
         setErrors(err => ({ ...err, phone: validatePhone(val) }));
       }
-      
+
       return updated;
     });
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    
+
     const emailErr = validateEmail(form.email);
     const phoneErr = validatePhone(form.phone);
-    
+
     if (emailErr || phoneErr) {
       setErrors({ email: emailErr, phone: phoneErr });
       return;
