@@ -6,9 +6,9 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import "./ContactPage.css";
 
 const info = [
-  { icon: <FiMail />, label: "Email Us", value: "[EMAIL_ADDRESS]", sub: "We reply within 2 hours" },
+  { icon: <FiMail />, label: "Email Us", value: "info@sdpt.com", sub: "We reply within 2 hours" },
   // { icon: <FiPhone />, label: "Call Us", value: "+91 123 456 7890", sub: "Mon–Sat, 10AM – 7PM" },
-  { icon: <FiMapPin />, label: "Visit Us", value: "Nanubhai Centre, Race Course Rd, Hari Nagar, Vadodara - 390007", sub: "Gujarat, India" },
+  // { icon: <FiMapPin />, label: "Visit Us", value: "Nanubhai Centre, Race Course Rd, Hari Nagar, Vadodara - 390007", sub: "Gujarat, India" },
   { icon: <FiClock />, label: "Business Hours", value: "Mon – Sat: 10AM – 7PM", sub: "Sunday: Closed" },
 ];
 
@@ -209,7 +209,7 @@ const ContactPage = () => {
 
       <div className="contact-map">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.0398131998886!2d75.76428434867587!3d26.83868597114864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db576ba5fa5cb%3A0x96ef8a27f02afd04!2sRMAX%20CO%20WORKING%20SPACE!5e0!3m2!1sen!2sus!4v1779525826681!5m2!1sen!2sus"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.966980872515!2d73.15556601488415!3d22.293341548200305!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x362c231381774687%3A0x38b91d2241e750db!2sNanubhai%20Centre!5e0!3m2!1sen!2sin!4v1753737511781!5m2!1sen!2sin"
           width="100%"
           height="450"
           style={{ border: 0 }}

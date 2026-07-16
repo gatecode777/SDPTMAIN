@@ -6,15 +6,15 @@ import { FiShield, FiFileText, FiLock, FiEye, FiShare2, FiAlertCircle, FiMail, F
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-[#fafafa] font-['Poppins'] pb-20">
-      {}
+      { }
       <div className="relative bg-[#0a0a0f] text-center overflow-hidden py-24 px-6 flex flex-col items-center justify-center min-h-[350px]">
-        {}
-        <div 
+        { }
+        <div
           className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1600&q=80')" }}
         ></div>
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0a0a0f] to-transparent opacity-90"></div>
-        
+
         <div className="relative z-10 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-bold tracking-widest uppercase mb-6">
             <FiShield size={14} /> Security & Trust
@@ -28,10 +28,10 @@ export default function PrivacyPolicyPage() {
 
       <div className="max-w-4xl mx-auto -mt-12 relative z-20 px-4 sm:px-6">
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-          
+
           <div className="p-8 md:p-12 space-y-12 text-slate-600 leading-relaxed text-sm md:text-base">
-            
-            {}
+
+            { }
             <div className="text-lg text-slate-700 bg-slate-50 p-6 rounded-xl border border-slate-100 border-l-4 border-l-blue-500">
               <p className="mb-2">
                 Welcome to <strong>SDPT Technologies Pvt. Ltd.</strong> (“SDPT”, “we”, “our”, or “us”).
@@ -42,7 +42,7 @@ export default function PrivacyPolicyPage() {
               </p>
             </div>
 
-            {}
+            { }
             <section className="space-y-5">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
@@ -51,10 +51,10 @@ export default function PrivacyPolicyPage() {
                 <h2 className="text-2xl font-bold text-slate-900 font-['Albert_Sans']">1. Information We Collect</h2>
               </div>
               <p>We may collect the following types of information:</p>
-              
+
               <div className="grid md:grid-cols-2 gap-6 mt-4">
                 <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                  <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><FiInfo className="text-blue-500"/> Personal Information</h3>
+                  <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><FiInfo className="text-blue-500" /> Personal Information</h3>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5"></div>Full Name & Email Address</li>
                     <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5"></div>Mobile Number</li>
@@ -64,7 +64,7 @@ export default function PrivacyPolicyPage() {
                   </ul>
                 </div>
                 <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                  <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><FiEye className="text-indigo-500"/> Technical Information</h3>
+                  <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><FiEye className="text-indigo-500" /> Technical Information</h3>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5"></div>IP Address & Browser Type</li>
                     <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5"></div>Device & Operating System</li>
@@ -75,7 +75,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {}
+            { }
             <section className="space-y-5">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
@@ -103,7 +103,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {}
+            { }
             <div className="grid md:grid-cols-2 gap-8">
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
               </section>
             </div>
 
-            {}
+            { }
             <section className="space-y-5">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500">
@@ -143,7 +143,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {}
+            { }
             <div className="grid md:grid-cols-2 gap-8 pt-4">
               <section className="space-y-3">
                 <h2 className="text-lg font-bold text-slate-900">6. User Rights</h2>
@@ -163,7 +163,7 @@ export default function PrivacyPolicyPage() {
               </section>
             </div>
 
-            {}
+            { }
             <section className="mt-12 bg-slate-900 text-white rounded-2xl p-8 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
               <div className="relative z-10">
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
                     </div>
                     <div>
                       <p className="text-xs text-slate-400 uppercase tracking-wider font-bold mb-1">Phone</p>
-                      <p className="text-sm font-semibold">+91 8502888838</p>
+                      <p className="text-sm font-semibold">+91 9845845554</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 transition-transform hover:-translate-y-1">

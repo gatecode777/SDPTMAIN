@@ -6,15 +6,15 @@ import { FiFileText, FiShoppingBag, FiCreditCard, FiTruck, FiRefreshCw, FiShield
 export default function TermsAndConditionsPage() {
   return (
     <div className="min-h-screen bg-[#fafafa] font-['Poppins'] pb-20">
-      {}
+      { }
       <div className="relative bg-[#0a0a0f] text-center overflow-hidden py-24 px-6 flex flex-col items-center justify-center min-h-[350px]">
-        {}
-        <div 
+        { }
+        <div
           className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80')" }}
         ></div>
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0a0a0f] to-transparent opacity-90"></div>
-        
+
         <div className="relative z-10 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-bold tracking-widest uppercase mb-6">
             <FiFileText size={14} /> Legal Agreement
@@ -28,10 +28,10 @@ export default function TermsAndConditionsPage() {
 
       <div className="max-w-4xl mx-auto -mt-12 relative z-20 px-4 sm:px-6">
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-          
+
           <div className="p-8 md:p-12 space-y-12 text-slate-600 leading-relaxed text-sm md:text-base">
-            
-            {}
+
+            { }
             <div className="text-lg text-slate-700 bg-slate-50 p-6 rounded-xl border border-slate-100 border-l-4 border-l-indigo-500">
               <p className="mb-2">
                 Welcome to <strong>SDPT Technologies Pvt. Ltd.</strong> (“SDPT”, “Company”, “we”, “our”, or “us”).
@@ -41,9 +41,9 @@ export default function TermsAndConditionsPage() {
               </p>
             </div>
 
-            {}
+            { }
             <div className="grid md:grid-cols-2 gap-8">
-              {}
+              { }
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
                   <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 shrink-0">
@@ -59,7 +59,7 @@ export default function TermsAndConditionsPage() {
                 </ul>
               </section>
 
-              {}
+              { }
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
                   <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
@@ -75,7 +75,7 @@ export default function TermsAndConditionsPage() {
                 </ul>
               </section>
 
-              {}
+              { }
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
                   <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0">
@@ -91,7 +91,7 @@ export default function TermsAndConditionsPage() {
                 </ul>
               </section>
 
-              {}
+              { }
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
                   <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shrink-0">
@@ -107,7 +107,7 @@ export default function TermsAndConditionsPage() {
                 </ul>
               </section>
 
-              {}
+              { }
               <section className="space-y-4">
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-2">
                   <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 shrink-0">
@@ -129,7 +129,7 @@ export default function TermsAndConditionsPage() {
               </section>
             </div>
 
-            {}
+            { }
             <div className="bg-slate-900 text-white p-8 rounded-2xl my-10 relative overflow-hidden">
               <FiAlertTriangle className="absolute -right-4 -bottom-4 text-[120px] text-white/5" />
               <div className="relative z-10 grid md:grid-cols-2 gap-8">
@@ -144,7 +144,7 @@ export default function TermsAndConditionsPage() {
               </div>
             </div>
 
-            {}
+            { }
             <div className="grid md:grid-cols-2 gap-8">
               <section className="space-y-3">
                 <h2 className="text-lg font-bold text-slate-900">9. Intellectual Property</h2>
@@ -172,7 +172,7 @@ export default function TermsAndConditionsPage() {
               </section>
             </div>
 
-            {}
+            { }
             <section className="mt-12 bg-indigo-50 border border-indigo-100 rounded-2xl p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-indigo-900 mb-6 font-['Albert_Sans']">15. Contact Information</h2>
               <div className="grid sm:grid-cols-3 gap-6">
@@ -191,7 +191,7 @@ export default function TermsAndConditionsPage() {
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-0.5">Phone</p>
-                    <p className="text-sm font-semibold">+91 8502888838</p>
+                    <p className="text-sm font-semibold">+91 984584555438</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100 transition-transform hover:-translate-y-1">
